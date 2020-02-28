@@ -69,7 +69,7 @@
     <Compile Include="Assets\ProCore\ProGrids\MonoBehaviour\pg_IgnoreSnap.cs" />
     <Compile Include="Assets\Scripts\BaseTileFactory.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
-    <Compile Include="Assets\Scripts\TileFactory.cs" />
+    <Compile Include="Assets\Scripts\TileCtrl.cs" />
     <Compile Include="Assets\Scripts\TileManager.cs" />
     <Compile Include="Assets\TooCubeForest\demoScenes\Movement.cs" />
     <None Include="Assets\ProCore\ProGrids\Shader\pg_GridShader.shader" />

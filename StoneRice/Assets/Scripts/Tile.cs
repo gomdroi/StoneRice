@@ -4,37 +4,20 @@ using UnityEngine;
 
 public struct Position
 {
-    float PosX;
-    float PosY;
-}
-
-public enum BASETILETYPE
-{
-    NONE,
-    STONEFLOOR,
-    STONEWALL
+    public float PosX;
+    public float PosY;
 }
 
 public class Tile
 {
+    public Position position;
+    public GameObject oTile; 
 
-    public GameObject baseTile;
-
-    public void setBaseTileType(BASETILETYPE _tileType)
+    public void setTilePosition(float _PosX, float _PosY)
     {
-        switch(_tileType)
-        {
-            case BASETILETYPE.STONEFLOOR:
-                baseTile.GetComponent<SpriteRenderer>().sprite = Resources.Load("Images/Forest_terrain_gray_128px_2") as Sprite;
-                break;
-            case BASETILETYPE.STONEWALL:
-                break;
-            default:
-                break;
-        }
+        position.PosX = _PosX;
+        position.PosY = _PosY;
     }
 
-    public void setTilePosition(int _PosX, int _PosY)
-    {
-    }
+    
 }

@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour
 {
-    public int DungeonWidth;
-    public int DungeonHeight;
+    public int mapWidth;
+    public int mapHeight;
+    public Tile[,] tileMap;
+    public BaseTileFactory bTileFactory;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        bTileFactory = GetComponent<BaseTileFactory>();
+    }
+
     void Start()
     {
-        TileFactory baseTileFactory = new BaseTileFactory();
-        baseTileFactory.createTile("StoneFloor");
-    }
+        tileMap = new Tile[mapWidth,mapHeight];
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        for (int i = 0; i < mapHeight; i++)
+        {
+            for(int j = 0; j < mapWidth; j++)
+            {
+                tileMap[i, j] = new Tile();
+                tileMap[i, j].setTilePosition(i,j);
+                tileMap[i, j].oTile = bTileFactory.createTile("StoneWall", i, j);
+            }
+        }
     }
+    
 }
