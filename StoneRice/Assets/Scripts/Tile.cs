@@ -8,16 +8,33 @@ public struct Position
     public float PosY;
 }
 
-public class Tile
+public class TileData
 {
     public Position position;
-    public GameObject oTile; 
+    public BASETILETYPE tileType;
+}
 
-    public void setTilePosition(float _PosX, float _PosY)
+public class Tile : MonoBehaviour
+{
+    public TileData tileData = new TileData();
+    public SpriteRenderer spriteRenderer;
+    public SpriteRenderer FOV_spriteRenderer;
+
+
+    private void Awake()
     {
-        position.PosX = _PosX;
-        position.PosY = _PosY;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        FOV_spriteRenderer = GetComponentInChildren<SpriteRenderer>();  
     }
 
-    
+    private void Start()
+    {
+        tileData.position.PosX = transform.position.x;
+        tileData.position.PosY = transform.position.y;
+    }
+
+    private void Update()
+    {
+        //플레이어 위치 감지 FOV 처리
+    }
 }
