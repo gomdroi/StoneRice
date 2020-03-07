@@ -43,6 +43,15 @@ public class TileManager : MonoSingleton<TileManager>
         //맵생성
         if(Input.GetKeyDown(KeyCode.C))
         {
+            //테스트용 초기화
+            for (int i = 0; i < mapHeight; i++)
+            {
+                for (int j = 0; j < mapWidth; j++)
+                {
+                    tileMapInfoArray[i, j].tileData.tileType = BASETILETYPE.EMPTY;
+                }
+            }
+
             caveGen.GenerateCaveMap();
         }
         
@@ -51,8 +60,41 @@ public class TileManager : MonoSingleton<TileManager>
         {
             applyChange();
         }
-    }
 
+        //방탐색 디버그
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            bool[,] rc = caveGen.roomCheck;
+
+            for(int i = 0; i < mapHeight; i++)
+            {
+                for(int j = 0; j < mapWidth; j++)
+                {
+                    if(rc[j,i])
+                    {
+                        tileMapInfoArray[j, i].tileData.tileType = BASETILETYPE.DEBUG;
+                    }
+                }
+            }
+
+            applyChange();
+        }
+
+        //가장 큰방 남기기
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            List<Room> rooms = caveGen.rooms;
+
+            for(int i = 1; i < rooms.Count; i++)
+            {
+                foreach(Tile tile in rooms[i].roomList)
+                {
+                    tile.tileData.tileType = BASETILETYPE.DEBUG;
+                }
+            }
+        }
+    }
+    
     void applyChange()
     {
         foreach(Tile tile in tileMapInfoArray)
@@ -60,13 +102,22 @@ public class TileManager : MonoSingleton<TileManager>
             switch(tile.tileData.tileType)
             {
                 case BASETILETYPE.EMPTY:
-                    tile.spriteRenderer.sprite = bTileFactory.sprite[0];
+                    tile.spriteRenderer.sprite = bTileFactory.baseTile_Sprite[0];
                     break;
                 case BASETILETYPE.STONEFLOOR:
-                    tile.spriteRenderer.sprite = bTileFactory.sprite[2];
+                    tile.spriteRenderer.sprite = bTileFactory.baseTile_Sprite[2];
                     break;
                 case BASETILETYPE.STONEWALL:
-                    tile.spriteRenderer.sprite = bTileFactory.sprite[3];
+                    tile.spriteRenderer.sprite = bTileFactory.baseTile_Sprite[3];
+                    break;
+                case BASETILETYPE.STAIR_DOWN:
+                    tile.spriteRenderer.sprite = bTileFactory.stair_Sprite[1];
+                    break;
+                case BASETILETYPE.STAIR_UP:
+                    tile.spriteRenderer.sprite = bTileFactory.stair_Sprite[0];
+                    break;
+                case BASETILETYPE.DEBUG:
+                    tile.spriteRenderer.sprite = bTileFactory.xTile_Sprite[0];
                     break;
                 default:
                     break;

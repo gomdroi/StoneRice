@@ -4,8 +4,8 @@ using UnityEngine;
 
 public struct Position
 {
-    public float PosX;
-    public float PosY;
+    public int PosX;
+    public int PosY;
 }
 
 public class TileData
@@ -20,7 +20,6 @@ public class Tile : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public SpriteRenderer FOV_spriteRenderer;
 
-
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -29,8 +28,8 @@ public class Tile : MonoBehaviour
 
     private void Start()
     {
-        tileData.position.PosX = transform.position.x;
-        tileData.position.PosY = transform.position.y;
+        tileData.position.PosX = (int)transform.position.x;
+        tileData.position.PosY = (int)transform.position.y;
     }
 
     private void Update()
