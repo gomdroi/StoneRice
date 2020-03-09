@@ -12,6 +12,7 @@ public class TileData
 {
     public Position position;
     public BASETILETYPE tileType;
+    public TILE_RESTRICTION tileRestriction;
 }
 
 public class Tile : MonoBehaviour

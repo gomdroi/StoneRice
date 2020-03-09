@@ -4,5 +4,10 @@ using UnityEngine;
 
 public class PlayerManager : MonoSingleton<PlayerManager>
 {
-    private Player player;
+    GameObject playerPrefab;
+
+    private void Awake()
+    {
+        playerPrefab = Resources.Load("Prefabs/Player") as GameObject;
+    }
 }

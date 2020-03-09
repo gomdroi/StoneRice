@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Tiles
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 5940ae19ec3ac3c46b8d86c2b577aba2, type: 3}
+    - {fileID: 102900000, guid: fc06a8ddb6fe55b40b1b6aff440373d4, type: 3}
+    - {fileID: 102900000, guid: e88d0c2f565bd074fb877e9c210275f4, type: 3}
+    - {fileID: 2800000, guid: 7fa091010beb90645bd41fab95d51f93, type: 3}
+    - {fileID: 2800000, guid: e1db5308f33b15346acace86bd4c5dba, type: 3}
+    totalSpriteSurfaceArea: 34816
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 2dcbdb501eeb4864ca4513b2f5d5668e, type: 3}
+  - {fileID: 21300000, guid: 309a7290458b66442951961186d01520, type: 3}
+  - {fileID: 21300000, guid: 7fa091010beb90645bd41fab95d51f93, type: 3}
+  - {fileID: 21300000, guid: 69874621d95e1f44b99e81d8ccc7fa66, type: 3}
+  - {fileID: 21300000, guid: 71c80c824a7102b499d602c507610379, type: 3}
+  - {fileID: 21300000, guid: 6ee96683af9759f419c1dbe91b27e3c2, type: 3}
+  - {fileID: 21300000, guid: 0bde01c33214d4a4d936641c05b7120e, type: 3}
+  - {fileID: 21300000, guid: d283ca7466cbed34fb41e4316b3d9001, type: 3}
+  - {fileID: 21300000, guid: 407546e41c6c44249b0088cf6ca660ed, type: 3}
+  - {fileID: 21300000, guid: 8a0e9e25d785a7946939ee08ac86b117, type: 3}
+  - {fileID: 21300000, guid: 71c6faa5239a94744a6dddf905f2d58c, type: 3}
+  - {fileID: 21300000, guid: c0c2b0760953bb04cadea76eacaf8631, type: 3}
+  - {fileID: 21300000, guid: 101d5ca687bb35a4bb15f331c795a4f5, type: 3}
+  - {fileID: 21300000, guid: ba02bfe65a832a84fbafc9be2c6f558e, type: 3}
+  - {fileID: 21300000, guid: f5b5f287a79deea41828e099f2cb6b75, type: 3}
+  - {fileID: 21300000, guid: e1db5308f33b15346acace86bd4c5dba, type: 3}
+  - {fileID: 21300000, guid: d1645ff895337d94a9bf13358f93783e, type: 3}
+  - {fileID: 21300000, guid: 0bfbb10963f77084cbfc4bc5a20f6513, type: 3}
+  - {fileID: 21300000, guid: 69046979510db564b9ffd7c0df3aad52, type: 3}
+  - {fileID: 21300000, guid: 7022285ad1314194da29bbd10b18c98d, type: 3}
+  - {fileID: 21300000, guid: 9e73ecdb06df77f44a91d9e17970c1bf, type: 3}
+  - {fileID: 21300000, guid: 3d62b23ca10efe944849bf9d4a61d389, type: 3}
+  - {fileID: 21300000, guid: a2ebdc9c15b2e314993bab5a43147347, type: 3}
+  - {fileID: 21300000, guid: 124eec7d888c6a547af06be1d1f0413c, type: 3}
+  - {fileID: 21300000, guid: e6490d0e26b5f014399f78dcbdb46ecd, type: 3}
+  - {fileID: 21300000, guid: 3ba8966e7cedc344d84e001be0eca638, type: 3}
+  - {fileID: 21300000, guid: 03d9028e16ea3c345a4c5c8241b56fbe, type: 3}
+  - {fileID: 21300000, guid: 238abc8e8ad5f534aa37ae25bd4f32f2, type: 3}
+  - {fileID: 21300000, guid: 60a327eefeadd9f4788819d43bcbf4ee, type: 3}
+  - {fileID: 21300000, guid: d197b88f8dc67ad4b803b3cbefc30223, type: 3}
+  - {fileID: 21300000, guid: 41d03e8f17dc23e46916a1209cad2176, type: 3}
+  - {fileID: 21300000, guid: 7b3180bff78ef5247993b21f28c48047, type: 3}
+  - {fileID: 21300000, guid: 2f2e33cf41314fa4e9d3700e6d11608f, type: 3}
+  - {fileID: 21300000, guid: 8ebe1dff3bc6a1042b75aa6ac60ee451, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - lair_2_old
+  - lair_3_new
+  - empty
+  - orc_wall_1
+  - orc_floor_3
+  - lair_1_old
+  - lava_old
+  - orc_floor_4
+  - lava_floor_3
+  - orc_wall_11
+  - lava_floor_1
+  - orc_wall_6
+  - orc_wall_9
+  - orc_wall_0
+  - orc_floor_1
+  - unseen
+  - lair_3_old
+  - orc_floor_6
+  - orc_wall_3
+  - orc_floor_0
+  - orc_wall_10
+  - orc_wall_2
+  - lava_floor_2
+  - orc_wall_8
+  - orc_wall_4
+  - lair_2_new
+  - rock_stairs_up
+  - rock_stairs_down
+  - orc_floor_5
+  - lava_floor_0
+  - orc_wall_7
+  - orc_floor_7
+  - orc_wall_5
+  - orc_floor_2
+  m_Tag: Tiles
+  m_IsVariant: 0

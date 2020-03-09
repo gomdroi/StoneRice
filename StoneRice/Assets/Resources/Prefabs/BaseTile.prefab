@@ -70,12 +70,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b00b9ff8e2a7f494c9679b0b59c599bb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7fa091010beb90645bd41fab95d51f93, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -93,8 +93,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad65e67ded28184cbb2f3e125406b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oTile: {fileID: 0}
-  tileType: 0
   spriteRenderer: {fileID: 0}
   FOV_spriteRenderer: {fileID: 0}
 --- !u!1 &3219624104625157002
@@ -173,6 +171,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

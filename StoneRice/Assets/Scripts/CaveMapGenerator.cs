@@ -28,8 +28,11 @@ public class CaveMapGenerator : MonoBehaviour
 
     private void Awake()
     {
-        m_tileManager = TileManager.Instance;
+        m_tileManager = TileManager.Instance;      
+    }
 
+    public void CaveInit()
+    {
         //월카운트 배열 할당
         wallCount = new int[m_tileManager.mapWidth, m_tileManager.mapHeight];
         //셔플용 배열 할당
@@ -38,6 +41,10 @@ public class CaveMapGenerator : MonoBehaviour
         roomCheck = new bool[m_tileManager.mapWidth, m_tileManager.mapHeight];
         //룸 리스트 할당
         rooms = new List<Room>();
+
+        //그 외 속성 할당
+        mapSmoothness = 7;
+        wallRatio = 45;
     }
 
     public void GenerateCaveMap()
@@ -74,13 +81,14 @@ public class CaveMapGenerator : MonoBehaviour
         {
             CaveShaping();
         }
-        //계단 놓기
-        SetStairs();
+       
         //룸리스트 초기화
         rooms.Clear();
         //방 검색
         AddRooms();
-        CompareRooms();
+
+        //계단 놓기
+        SetStairs();
     }
 
     //랜덤한 벽을 배치하기위해 인덱스 셔플
@@ -118,20 +126,28 @@ public class CaveMapGenerator : MonoBehaviour
     //셀룰러 오토마타 알고리즘으로 동굴을 한번 깎는 함수
     private void CaveShaping()
     {
-        for (int i = 0; i < m_tileManager.mapWidth; i++)
+        for (int i = 0; i < m_tileManager.mapHeight; i++)
         {
-            for (int j = 0; j < m_tileManager.mapHeight; j++)
+            for (int j = 0; j < m_tileManager.mapWidth; j++)
             {
-                CheckWallCount(i, j);
+                CheckWallCount(j, i);
             }
         }
 
-        for (int i = 0; i < m_tileManager.mapWidth; i++)
+        for (int i = 0; i < m_tileManager.mapHeight; i++)
         {
-            for (int j = 0; j < m_tileManager.mapHeight; j++)
+            for (int j = 0; j < m_tileManager.mapWidth; j++)
             {
-                if (wallCount[i, j] >= 5) tileMapInfo[i, j].tileData.tileType = BASETILETYPE.STONEWALL;
-                else tileMapInfo[i, j].tileData.tileType = BASETILETYPE.STONEFLOOR;
+                if (wallCount[j, i] >= 5)
+                {
+                    tileMapInfo[j, i].tileData.tileType = BASETILETYPE.STONEWALL;
+                    tileMapInfo[j, i].tileData.tileRestriction = TILE_RESTRICTION.FORBIDDEN;
+                }
+                else
+                {
+                    tileMapInfo[j, i].tileData.tileType = BASETILETYPE.STONEFLOOR;
+                    tileMapInfo[j, i].tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE;
+                }
             }
         }
     }
@@ -165,7 +181,7 @@ public class CaveMapGenerator : MonoBehaviour
 
             if (!isStairDownSet)
             {
-                if (tileMapInfo[stairX, stairY].tileData.tileType == BASETILETYPE.STONEWALL) continue;
+                if (tileMapInfo[stairX, stairY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN) continue;
                 else
                 {
                     tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_DOWN;
@@ -174,7 +190,7 @@ public class CaveMapGenerator : MonoBehaviour
             }
             else if (isStairDownSet)
             {
-                if (tileMapInfo[stairX, stairY].tileData.tileType == BASETILETYPE.STONEWALL) continue;
+                if (tileMapInfo[stairX, stairY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN) continue;
                 else
                 {
                     tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_UP;
@@ -218,17 +234,20 @@ public class CaveMapGenerator : MonoBehaviour
         CompareRooms();
     }
 
-    //방의 크기를 재는 함수
-    public Room CheckRoomSize(int PosX, int PosY)
+    //(벽을 기준으로)방의 크기를 재서 방을 반환
+    public Room CheckRoomSize(int _PosX, int _PosY)
     {
         int RoomCount = 0;
         List<Tile> openList = new List<Tile>();
         List<Tile> closeList = new List<Tile>();
         Room room = new Room();
+        //HashSet은 인덱스 접근이 불가능, 이터레이터로 순회하면 순회중에 목록을 건드릴 수 없음.
+        
+
         
         //오픈 리스트를 돌면서 주변 타일을 검색해서 다시 오픈리스트에 넣어줌
         //주변 검색을 시도한 타일은 클로즈 리스트로 들어감
-        openList.Add(tileMapInfo[PosX, PosY]);
+        openList.Add(tileMapInfo[_PosX, _PosY]);
         while (openList.Count != 0)
         {
             for (int i = 0; i < openList.Count; i++)
@@ -285,7 +304,6 @@ public class CaveMapGenerator : MonoBehaviour
                 roomCheck[openList[i].tileData.position.PosX, openList[i].tileData.position.PosY] = true;
                 closeList.Add(openList[i]);
                 openList.Remove(openList[i]);
-                              
                 RoomCount += 1;
             }       
         }
@@ -307,7 +325,16 @@ public class CaveMapGenerator : MonoBehaviour
         {
             Debug.Log(i + "번째 방 개수 : " + rooms[i].roomSize);
         }
-        
+
+        //가장 큰방을 남김
+        for (int i = 1; i < rooms.Count; i++)
+        {
+            foreach (Tile tile in rooms[i].roomList)
+            {
+                tile.tileData.tileType = BASETILETYPE.OUTOFRANGE;
+                tile.tileData.tileRestriction = TILE_RESTRICTION.FORBIDDEN;
+            }
+        }
     }
 }
     

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public enum BASETILETYPE
 {
@@ -9,22 +10,25 @@ public enum BASETILETYPE
     STONEWALL,
     STAIR_DOWN,
     STAIR_UP,
-    DEBUG
+    OUTOFRANGE
+}
+
+public enum TILE_RESTRICTION
+{
+    FORBIDDEN,
+    MOVEABLE,
+    FLYONLY
 }
 
 public class BaseTileFactory : MonoBehaviour
 {
     public GameObject baseTile;
-    public Sprite[] baseTile_Sprite;
-    public Sprite[] xTile_Sprite;
-    public Sprite[] stair_Sprite;
+    public SpriteAtlas tiles;
 
     private void Awake()
     {
         baseTile = Resources.Load("Prefabs/BaseTile") as GameObject;
-        baseTile_Sprite = Resources.LoadAll<Sprite>("Images/Forest_terrain_gray_128px");
-        xTile_Sprite = Resources.LoadAll<Sprite>("Images/Forest_terrain_blue_128px");
-        stair_Sprite = Resources.LoadAll<Sprite>("Images/Forest_terrain_slope_gray_snow_128px");
+        tiles = Resources.Load<SpriteAtlas>("Images/Tiles");   
     }  
     
     public GameObject createTile(BASETILETYPE _type, float _PosX, float _PosY)
@@ -32,7 +36,7 @@ public class BaseTileFactory : MonoBehaviour
         var oTile = Instantiate(baseTile, new Vector2(_PosX,_PosY), Quaternion.identity);
 
         oTile.GetComponent<Tile>().tileData.tileType = _type;
-        oTile.GetComponent<SpriteRenderer>().sprite = baseTile_Sprite[(int)_type];
+        //oTile.GetComponent<SpriteRenderer>().sprite = baseTile_Sprite[(int)_type];
 
         return oTile;
     }

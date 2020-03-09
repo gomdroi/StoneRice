@@ -8,13 +8,20 @@ public class GameManager : MonoBehaviour
     public int GM_mapHeight;
     TileManager m_TileManager = null;
     EnemyManager m_EnemyManager = null;
+    PlayerManager m_PlayerManager = null;
+
 
     private void Awake()
     {
         m_TileManager = TileManager.Instance;
-        m_EnemyManager = EnemyManager.Instance;
-
-        //m_manager.mapWidth = GM_mapWidth;
-        //m_manager.mapHeight = GM_mapHeight;
+        m_PlayerManager = PlayerManager.Instance;
+        m_EnemyManager = EnemyManager.Instance;       
     }
+
+    private void Start()
+    {
+        m_TileManager.mapWidth = GM_mapWidth;
+        m_TileManager.mapHeight = GM_mapHeight;
+    }
+
 }

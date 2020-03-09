@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class TileManager : MonoSingleton<TileManager>
 {
-    public GameObject[,] tileMap;
+    public GameObject[,] tileMap; //바닥에 깔려있는 타일맵
+    public List<GameObject> objectList; //바닥에 깔려있는 오브젝트 리스트, 타일 매니저가 갖고있을게 아닌거 같음.
     public int mapWidth;
     public int mapHeight;
     public Tile[,] tileMapInfoArray;
     public BaseTileFactory bTileFactory;
     public CaveMapGenerator caveGen;
     
-    
     private void Awake()
     {
+        this.gameObject.AddComponent<BaseTileFactory>();
+        this.gameObject.AddComponent<CaveMapGenerator>(); 
+        
         bTileFactory = GetComponent<BaseTileFactory>();
         caveGen = GetComponent<CaveMapGenerator>();
     }
@@ -27,6 +30,8 @@ public class TileManager : MonoSingleton<TileManager>
         //임시 초기화
         if(Input.GetKeyDown(KeyCode.S))
         {
+            caveGen.CaveInit();
+
             tileMap = new GameObject[mapWidth, mapHeight];
             tileMapInfoArray = new Tile[mapWidth, mapHeight];
 
@@ -53,71 +58,50 @@ public class TileManager : MonoSingleton<TileManager>
             }
 
             caveGen.GenerateCaveMap();
+            applyChange();
         }
         
         //적용
         if(Input.GetKeyDown(KeyCode.Space))
         {
             applyChange();
-        }
-
-        //방탐색 디버그
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            bool[,] rc = caveGen.roomCheck;
-
-            for(int i = 0; i < mapHeight; i++)
-            {
-                for(int j = 0; j < mapWidth; j++)
-                {
-                    if(rc[j,i])
-                    {
-                        tileMapInfoArray[j, i].tileData.tileType = BASETILETYPE.DEBUG;
-                    }
-                }
-            }
-
-            applyChange();
-        }
-
-        //가장 큰방 남기기
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            List<Room> rooms = caveGen.rooms;
-
-            for(int i = 1; i < rooms.Count; i++)
-            {
-                foreach(Tile tile in rooms[i].roomList)
-                {
-                    tile.tileData.tileType = BASETILETYPE.DEBUG;
-                }
-            }
-        }
+        }       
     }
     
     void applyChange()
     {
         foreach(Tile tile in tileMapInfoArray)
-        {
-            switch(tile.tileData.tileType)
+        {           
+            int spriteNum = 0; //랜덤 스프라이트 선택 변수
+
+            switch (tile.tileData.tileType)
             {
                 case BASETILETYPE.EMPTY:
-                    tile.spriteRenderer.sprite = bTileFactory.baseTile_Sprite[0];
+                    tile.spriteRenderer.sprite = bTileFactory.tiles.GetSprite("empty");
+                    tile.tileData.tileRestriction = TILE_RESTRICTION.FORBIDDEN;
                     break;
                 case BASETILETYPE.STONEFLOOR:
-                    tile.spriteRenderer.sprite = bTileFactory.baseTile_Sprite[2];
+                    spriteNum = Random.Range(0, 7);
+                    tile.spriteRenderer.sprite = bTileFactory.tiles.GetSprite("orc_floor_" + spriteNum.ToString());
+                    tile.tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE;
                     break;
                 case BASETILETYPE.STONEWALL:
-                    tile.spriteRenderer.sprite = bTileFactory.baseTile_Sprite[3];
+                    spriteNum = Random.Range(0, 11);
+                    tile.spriteRenderer.sprite = bTileFactory.tiles.GetSprite("orc_wall_" + spriteNum.ToString());
+                    tile.tileData.tileRestriction = TILE_RESTRICTION.FORBIDDEN;
                     break;
                 case BASETILETYPE.STAIR_DOWN:
-                    tile.spriteRenderer.sprite = bTileFactory.stair_Sprite[1];
+                    tile.spriteRenderer.sprite = bTileFactory.tiles.GetSprite("rock_stairs_down");
+                    tile.tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE;
                     break;
                 case BASETILETYPE.STAIR_UP:
-                    tile.spriteRenderer.sprite = bTileFactory.stair_Sprite[0];
+                    tile.spriteRenderer.sprite = bTileFactory.tiles.GetSprite("rock_stairs_up");
+                    tile.tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE;
                     break;
-                case BASETILETYPE.DEBUG:
-                    tile.spriteRenderer.sprite = bTileFactory.xTile_Sprite[0];
+                case BASETILETYPE.OUTOFRANGE:                  
+                    spriteNum = Random.Range(0, 3);
+                    tile.spriteRenderer.sprite = bTileFactory.tiles.GetSprite("lava_floor_" + spriteNum.ToString());
+                    tile.tileData.tileRestriction = TILE_RESTRICTION.FORBIDDEN;
                     break;
                 default:
                     break;
