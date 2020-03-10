@@ -397,8 +397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5461f6684fa6254bb2ff00a58dace73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GM_mapWidth: 30
-  GM_mapHeight: 30
+  GM_mapWidth: 40
+  GM_mapHeight: 40
 --- !u!4 &1106879570
 Transform:
   m_ObjectHideFlags: 0
@@ -483,9 +483,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC784\uC2DC \uCD08\uAE30\uD654 : S\n\uB9F5 \uC0DD\uC131 : C\n\uC801\uC6A9
-    : SPACE\n\uBC29 \uD0D0\uC0C9 \uB514\uBC84\uADF8 : D\n\uD070 \uBC29 \uB0A8\uAE30\uAE30
-    \uB514\uBC84\uADF8 : F"
+  m_Text: "\uC784\uC2DC \uCD08\uAE30\uD654 : S\n\uB9F5 \uC0DD\uC131 : C"
 --- !u!222 &1533896958
 CanvasRenderer:
   m_ObjectHideFlags: 0

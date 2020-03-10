@@ -13,6 +13,7 @@ public class TileData
     public Position position;
     public BASETILETYPE tileType;
     public TILE_RESTRICTION tileRestriction;
+    public int fov_Value;
 }
 
 public class Tile : MonoBehaviour

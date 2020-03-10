@@ -31,7 +31,7 @@ public class CaveMapGenerator : MonoBehaviour
         m_tileManager = TileManager.Instance;      
     }
 
-    public void CaveInit()
+    public void Init()
     {
         //월카운트 배열 할당
         wallCount = new int[m_tileManager.mapWidth, m_tileManager.mapHeight];
@@ -185,6 +185,8 @@ public class CaveMapGenerator : MonoBehaviour
                 else
                 {
                     tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_DOWN;
+                    m_tileManager.stairDownPos.PosX = stairX;
+                    m_tileManager.stairDownPos.PosY = stairY;
                     isStairDownSet = true;
                 }
             }
@@ -194,6 +196,8 @@ public class CaveMapGenerator : MonoBehaviour
                 else
                 {
                     tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_UP;
+                    m_tileManager.stairUpPos.PosX = stairX;
+                    m_tileManager.stairUpPos.PosY = stairY;
                     break;
                 }
             }
