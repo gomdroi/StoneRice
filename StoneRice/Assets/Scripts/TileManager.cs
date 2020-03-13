@@ -83,10 +83,16 @@ public class TileManager : MonoSingleton<TileManager>
         if(Input.GetKeyDown(KeyCode.Space))
         {
             ApplyChange();
-        }       
+        }
+
+        //임시 에이스타 초기화
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Astar.Instance.AstarInit();
+        }
 
         //스테이지 선택
-        if(Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             LoadStage(Stages[0]);
             ApplyChange();
