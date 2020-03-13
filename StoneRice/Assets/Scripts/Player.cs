@@ -7,14 +7,22 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Position position;
+    public Vector3 prePos;
     //실제 타일 배열
     public Tile[,] tileMapInfo;
     public int mapHeight;
     public int mapWidth;
+    TurnManager m_TurnManager;
 
     private void Awake()
     {
-        
+        m_TurnManager = TurnManager.Instance;
+    }
+
+    private void Start()
+    {
+        m_TurnManager.turnState = TURN_STATE.PLAYER_TURN;
+        prePos = transform.position;
     }
 
     //층을 옮길때마다 층의 타일맵 정보를 받아와야함
@@ -29,9 +37,29 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (m_TurnManager.turnState == TURN_STATE.PLAYER_TURN)
+        {
+            TurnOverCheck();
+            PlayerInput();
+        }       
+    }
+
+    void TurnOverCheck()
+    {
+        if(prePos != transform.position)
+        {
+            prePos = transform.position;
+            position.PosX = (int)transform.position.x;
+            position.PosY = (int)transform.position.y;
+            m_TurnManager.turnState = TURN_STATE.ENEMY_TURN;
+        }      
+    }
+
+    void PlayerInput()
+    {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            if(transform.position.y + 1 < mapHeight) //타일 최상단이 아닐 경우
+            if (transform.position.y + 1 < mapHeight) //타일 최상단이 아닐 경우
             {
                 if (tileMapInfo[(int)transform.position.x, (int)transform.position.y + 1].tileData.tileRestriction == TILE_RESTRICTION.MOVEABLE)
                 {

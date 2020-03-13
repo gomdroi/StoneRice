@@ -9,13 +9,14 @@ public class GameManager : MonoSingleton<GameManager>
     TileManager m_TileManager = null;
     EnemyManager m_EnemyManager = null;
     PlayerManager m_PlayerManager = null;
-
+    TurnManager m_TunrManager = null;
 
     private void Awake()
     {
         m_TileManager = TileManager.Instance;
         m_PlayerManager = PlayerManager.Instance;
-        m_EnemyManager = EnemyManager.Instance;       
+        m_EnemyManager = EnemyManager.Instance;
+        m_TunrManager = TurnManager.Instance;
     }
 
     private void Start()

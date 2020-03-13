@@ -78,12 +78,6 @@ public class TileManager : MonoSingleton<TileManager>
 
             Stages.Add(SaveStage());
         }
-        
-        //적용
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            ApplyChange();
-        }
 
         //임시 에이스타 초기화
         if (Input.GetKeyDown(KeyCode.A))

@@ -16,6 +16,7 @@ public class AstarTile
     
     public void Init()
     {
+        parentTile = null;
         isListed = false;
         F = 5000;
         G = 0;
@@ -124,6 +125,22 @@ public class Astar : Singleton<Astar>
         pathList = new List<TileData>();
     }
 
+    public void AstarTest()
+    {
+        for (int i = 0; i < mapHeight; i++)
+        {
+            for (int j = 0; j < mapWidth; j++)
+            {
+                astarTiles[j, i].Init();
+            }
+        }
+
+        lastIndex = 0;
+        openList.Clear();
+        closeList.Clear();
+        pathList.Clear();
+        isDone = false;
+    }
     
     void AddOpenList(Position _endpos)
     {

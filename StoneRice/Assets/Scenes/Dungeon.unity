@@ -263,7 +263,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 26
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -287,7 +287,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: -10}
+  m_LocalPosition: {x: 25, y: 25, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -397,8 +397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5461f6684fa6254bb2ff00a58dace73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GM_mapWidth: 40
-  GM_mapHeight: 40
+  GM_mapWidth: 50
+  GM_mapHeight: 50
 --- !u!4 &1106879570
 Transform:
   m_ObjectHideFlags: 0
@@ -483,7 +483,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC784\uC2DC \uCD08\uAE30\uD654 : S\n\uB9F5 \uC0DD\uC131 : C"
+  m_Text: "\uC784\uC2DC \uCD08\uAE30\uD654 : S\n\uB9F5 \uC0DD\uC131 : C\n\uC5D0\uC774\uC2A4\uD0C0
+    \uCD08\uAE30\uD654 : A\n\uBAB9 \uBC30\uCE58 : E"
 --- !u!222 &1533896958
 CanvasRenderer:
   m_ObjectHideFlags: 0

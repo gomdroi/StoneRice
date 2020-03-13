@@ -6,11 +6,16 @@ public class EnemyManager : MonoSingleton<EnemyManager>
 {    
     GameObject enemy1Prefab;   
 
-    private List<GameObject> EnemyList;
+    public List<GameObject> enemyList;
 
     private void Awake()
     {
         enemy1Prefab = Resources.Load("Prefabs/Enemy1") as GameObject;
+    }
+
+    private void Start()
+    {
+        enemyList = new List<GameObject>();
     }
 
     private void Update()
@@ -25,6 +30,7 @@ public class EnemyManager : MonoSingleton<EnemyManager>
     {
         var oEnemy = Instantiate(enemy1Prefab, new Vector2(TileManager.instance.stairUpPos.PosX, TileManager.instance.stairUpPos.PosY), Quaternion.identity);
         oEnemy.GetComponent<Enemy>().EnemyInit();
+        enemyList.Add(oEnemy);
     }
     //플레이어턴이 끝나면
     //에너미 리스트 돌면서 턴오버 체크
