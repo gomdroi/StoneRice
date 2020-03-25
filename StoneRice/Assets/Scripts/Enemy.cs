@@ -2,83 +2,201 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ENEMYTYPE
+{
+    JELLY,
+    KOBOLD
+}
+
+public enum ENEMYSTATE
+{
+    IDLE,
+    TRACKING,
+    ATTACK,
+    RUNNINGAWAY
+}
+
+public struct EnemyData
+{
+    public Position position;
+    public ENEMYTYPE enemyType;
+    public int maxHp;
+    public int curHp;
+    public int maxMp;
+    public int curMp;
+    public int atk;
+    public float atkRange;
+    public int def;
+    public int viewRange;
+}
 
 public class Enemy : MonoBehaviour
 {
-    public Position position;
-    List<TileData> astarPath;
+    public EnemyData enemyData; 
+    protected List<TileData> astarPath;
     public Position playerPos;
+    public ENEMYSTATE enemyState;
+
+    public int mapWidth;
+    public int mapHeight;
 
     //ASTAR 테스트
     float rayDistance;
 
     public void EnemyInit()
     {
-        position.PosX = (int)this.gameObject.transform.position.x;
-        position.PosY = (int)this.gameObject.transform.position.y;
+        enemyData.position.PosX = (int)this.gameObject.transform.position.x;
+        enemyData.position.PosY = (int)this.gameObject.transform.position.y;
         astarPath = new List<TileData>();
+        //enemyData = new EnemyData();
+        enemyState = ENEMYSTATE.IDLE;
+        
+        //꼭 필요할까
+        mapWidth = TileManager.Instance.mapWidth;
+        mapHeight = TileManager.Instance.mapHeight;
+        
 
         rayDistance = 15f;
     }
 
-    private void Update()
-    {
-        AstarTestRayCast();
-    }
+    //private void Update()
+    //{
+    //    AstarTestRayCast();
+    //}
 
-    public void TurnProgress()
-    {
-        if(CheckAtkRange()) //공격 범위에 적이없으면
+    //몬스터 타입에 따라 한턴 프로그레스 내용 변경? 
+    //스텟은 어떻게?
+    //적한테 인식번호를 줘야되나? 그래서 다른 곳에서 데이터를 관리?
+
+
+    public virtual void TurnProgress()
+    {     
+        //자신의 HP상태가 얼마남지 않았으면 러닝어웨이로 전환(특정 몹 한정)
+
+        switch (enemyState)
         {
-
+            case ENEMYSTATE.IDLE:
+                //가만히 있던지 이리저리 돌아다님
+                
+                //플레이어와 거리가 인식범위 이내로 들어오면 트래킹으로 전환                
+                break;
+            case ENEMYSTATE.TRACKING:
+                //플레이어를 대상으로 에이스타 사용 추적 이동
+                //공격 사거리내에 플레이어가 있고 LOS가 나오면 어택으로 전환
+                break;
+            case ENEMYSTATE.ATTACK:
+                //공격행동을 수행함.
+                break;
+            case ENEMYSTATE.RUNNINGAWAY:
+                break;
         }
-        else //이동
+    }
+
+    protected void TrackPlayer()
+    {
+        Astar.Instance.ClearData();
+        astarPath = Astar.Instance.PathFinding(enemyData.position, playerPos); //플레이어로 길 탐색
+        enemyData.position = astarPath[0].position; //한칸만 이동
+        transform.position = new Vector2(enemyData.position.PosX, enemyData.position.PosY);
+    }
+
+    protected void RandomMovement()
+    {
+        int rndNum = Random.Range(0, 8);
+    }
+
+    private float degreeToRadian(int _degree)
+    {
+        return _degree * (Mathf.PI / 180);
+    }
+
+    private float distance(float _a, float _b)
+    {
+        return _a > _b ? _a : _b;
+    }
+
+    private float diagonalDistance(int _x0, int _y0, int _x1, int _y1)
+    {
+        int dx = _x1 - _x0;
+        int dy = _y1 - _y0;
+
+        return distance(Mathf.Abs(dx), Mathf.Abs(dy));
+    }
+
+    public void CalcEnemyFov(Tile[,] _tilemap)
+    {
+        for (int i = 0; i < 360; i++) //1도씩 360도 계산
         {
-            Astar.Instance.AstarTest();
-            playerPos = PlayerManager.Instance.player.position; //플레이어 포지션 확인
-            astarPath = Astar.Instance.PathFinding(position, playerPos); //그곳으로 길탐색
-            position = astarPath[0].position; //한칸만 이동
-            transform.position = new Vector2(position.PosX, position.PosY);
-        }
-    }
+            float degree = degreeToRadian(i);
 
-    bool CheckAtkRange()
-    {
-        return false;
-    }
+            int nx = Mathf.RoundToInt(Mathf.Cos(degree) * enemyData.viewRange) + enemyData.position.PosX;
+            int ny = Mathf.RoundToInt(Mathf.Sin(degree) * enemyData.viewRange) + enemyData.position.PosY;
 
-    void AstarTestRayCast()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {         
-            Vector3 mousePosition;
-            mousePosition = Input.mousePosition;
-            mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            float distance = diagonalDistance(enemyData.position.PosX, enemyData.position.PosY, nx, ny); //각도당 시야 거리 계산
 
-            RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward, rayDistance);
-            Debug.DrawRay(mousePosition, transform.forward * 15, Color.red, 0.3f);
-            if (hit)
+            for (int j = 0; j < (int)distance; j++)
             {
-                Debug.Log(hit.transform.position);
-                Position destination;
-                destination.PosX = (int)hit.transform.position.x;
-                destination.PosY = (int)hit.transform.position.y;
+                int tileX = Mathf.RoundToInt(Mathf.Lerp(enemyData.position.PosX, nx, j / distance)); //러프를 이용해서 걸리는 타일을 뽑는다.
+                int tileY = Mathf.RoundToInt(Mathf.Lerp(enemyData.position.PosY, ny, j / distance));
 
-                StopCoroutine("moveMan");
-                Astar.Instance.AstarTest();
-                astarPath = Astar.Instance.PathFinding(position, destination);
-                StartCoroutine("moveMan");
+                if (tileX < 0 || tileX >= mapWidth) continue;
+                if (tileY < 0 || tileY >= mapHeight) continue;
+
+                if (_tilemap[tileX, tileY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN) //벽을 만나면
+                {                 
+                    break; //그 뒤로는 검색 중지
+                }
+                else
+                {          
+                    //시야거리 안에 플레이어가 있다면
+                    if(tileX == playerPos.PosX && tileY == playerPos.PosY)
+                    {
+                        //사정거리 안에 있으면
+                        if(enemyData.atkRange >= diagonalDistance(enemyData.position.PosX, enemyData.position.PosY, playerPos.PosX, playerPos.PosY))
+                        {
+                            enemyState = ENEMYSTATE.ATTACK;
+                        }
+                        else
+                        {
+                            enemyState = ENEMYSTATE.TRACKING;
+                        }                      
+                    }
+                }
             }
         }
     }
+    //void AstarTestRayCast()
+    //{
+    //    if (Input.GetMouseButtonDown(0))
+    //    {         
+    //        Vector3 mousePosition;
+    //        mousePosition = Input.mousePosition;
+    //        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-    IEnumerator moveMan()
-    {
-        for(int i = 0; i < astarPath.Count; i++)
-        {
-            position = astarPath[i].position;
-            transform.position = new Vector2(position.PosX, position.PosY);
-            yield return new WaitForSeconds(0.2f);
-        }
-    }
+    //        RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward, rayDistance);
+    //        Debug.DrawRay(mousePosition, transform.forward * 15, Color.red, 0.3f);
+    //        if (hit)
+    //        {
+    //            Debug.Log(hit.transform.position);
+    //            Position destination;
+    //            destination.PosX = (int)hit.transform.position.x;
+    //            destination.PosY = (int)hit.transform.position.y;
+
+    //            StopCoroutine("moveMan");
+    //            Astar.Instance.AstarTest();
+    //            astarPath = Astar.Instance.PathFinding(position, destination);
+    //            StartCoroutine("moveMan");
+    //        }
+    //    }
+    //}
+
+    //IEnumerator moveMan()
+    //{
+    //    for(int i = 0; i < astarPath.Count; i++)
+    //    {
+    //        position = astarPath[i].position;
+    //        transform.position = new Vector2(position.PosX, position.PosY);
+    //        yield return new WaitForSeconds(0.2f);
+    //    }
+    //}
 }

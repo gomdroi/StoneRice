@@ -13,10 +13,16 @@ public class Player : MonoBehaviour
     public int mapHeight;
     public int mapWidth;
     TurnManager m_TurnManager;
+    TileManager m_TileManager;
+    FOV fov;
+
+    int viewRange;
 
     private void Awake()
     {
         m_TurnManager = TurnManager.Instance;
+        m_TileManager = TileManager.Instance;
+        fov = new FOV();
     }
 
     private void Start()
@@ -33,29 +39,26 @@ public class Player : MonoBehaviour
         position.PosY = (int)this.gameObject.transform.position.y;
         mapHeight = TileManager.Instance.mapHeight;
         mapWidth = TileManager.Instance.mapWidth;
+
+        viewRange = 7;
+
+        fov.Init();
+        fov.CalcFov(tileMapInfo, position.PosX, position.PosY, viewRange);
     }
 
-    private void Update()
-    {
-        if (m_TurnManager.turnState == TURN_STATE.PLAYER_TURN)
-        {
-            TurnOverCheck();
-            PlayerInput();
-        }       
-    }
-
-    void TurnOverCheck()
+    public void TurnOverCheck()
     {
         if(prePos != transform.position)
         {
             prePos = transform.position;
             position.PosX = (int)transform.position.x;
             position.PosY = (int)transform.position.y;
-            m_TurnManager.turnState = TURN_STATE.ENEMY_TURN;
-        }      
+            fov.CalcFov(tileMapInfo, position.PosX, position.PosY, viewRange);
+            m_TurnManager.turnState = TURN_STATE.INTERACTIVE;
+        }       
     }
 
-    void PlayerInput()
+    public void PlayerInput()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -94,6 +97,23 @@ public class Player : MonoBehaviour
                 if (tileMapInfo[(int)transform.position.x + 1, (int)transform.position.y].tileData.tileRestriction == TILE_RESTRICTION.MOVEABLE)
                 {
                     transform.position = tileMapInfo[(int)transform.position.x + 1, (int)transform.position.y].transform.position;
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Comma))
+        {         
+            if (transform.position.x == m_TileManager.stairDownPos.PosX && transform.position.y == m_TileManager.stairDownPos.PosY)
+            {
+                GameManager.Instance.GoDownStage();
+                transform.position = new Vector2(m_TileManager.stairUpPos.PosX, m_TileManager.stairUpPos.PosY);
+            }
+            else if(transform.position.x == m_TileManager.stairUpPos.PosX && transform.position.y == m_TileManager.stairUpPos.PosY)
+            {
+                int preStage = GameManager.Instance.curStage;
+                GameManager.Instance.GoUpStage();
+                if (preStage != 0)
+                {
+                    transform.position = new Vector2(m_TileManager.stairDownPos.PosX, m_TileManager.stairDownPos.PosY);
                 }
             }
         }

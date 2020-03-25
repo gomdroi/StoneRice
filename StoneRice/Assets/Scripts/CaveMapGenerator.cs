@@ -184,9 +184,10 @@ public class CaveMapGenerator : MonoBehaviour
                 if (tileMapInfo[stairX, stairY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN) continue;
                 else
                 {
-                    tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_DOWN;
+                    //tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_DOWN;
                     m_tileManager.stairDownPos.PosX = stairX;
                     m_tileManager.stairDownPos.PosY = stairY;
+                    Debug.Log("내려가는 계단 : " + stairX + " , " + stairY);
                     isStairDownSet = true;
                 }
             }
@@ -195,9 +196,10 @@ public class CaveMapGenerator : MonoBehaviour
                 if (tileMapInfo[stairX, stairY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN) continue;
                 else
                 {
-                    tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_UP;
+                    //tileMapInfo[stairX, stairY].tileData.tileType = BASETILETYPE.STAIR_UP;
                     m_tileManager.stairUpPos.PosX = stairX;
                     m_tileManager.stairUpPos.PosY = stairY;
+                    Debug.Log("올라가는 계단 : " + stairX + " , " + stairY);
                     break;
                 }
             }
@@ -232,7 +234,7 @@ public class CaveMapGenerator : MonoBehaviour
                 if (flag) break;
                 //포문을 다 돌았다면(모든 방을 찾았다면)
                 if (i >= m_tileManager.mapHeight - 1) isAllRoomChecked = true;
-            }         
+            }
         }
         Debug.Log(rooms.Count);
         CompareRooms();

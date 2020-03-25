@@ -10,7 +10,7 @@ public class PlayerManager : MonoSingleton<PlayerManager>
 
     private void Awake()
     {
-        playerPrefab = Resources.Load("Prefabs/Player") as GameObject;
+        playerPrefab = Resources.Load("Prefabs/Player") as GameObject;       
     }
 
     private void Start()
@@ -31,5 +31,8 @@ public class PlayerManager : MonoSingleton<PlayerManager>
         var oPlayer = Instantiate(playerPrefab, new Vector2(TileManager.instance.stairDownPos.PosX, TileManager.instance.stairDownPos.PosY), Quaternion.identity);
         player = oPlayer.GetComponent<Player>();
         player.PlayerInit();
+        
+        Camera.main.transform.SetParent(oPlayer.transform);
+        Camera.main.transform.position = new Vector3(oPlayer.transform.position.x, oPlayer.transform.position.y, -10);
     }
 }

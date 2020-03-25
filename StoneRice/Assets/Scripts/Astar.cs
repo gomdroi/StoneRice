@@ -10,9 +10,9 @@ public class AstarTile
 
     public bool isListed;
 
-    public int F; //g+h
-    public int G; //from start to this
-    public int H; //from this to end   
+    public int F; //G+H
+    public int G; //시작부터 여기까지
+    public int H; //여기부터 끝까지   
     
     public void Init()
     {
@@ -36,7 +36,7 @@ public class AstarTile
             CalcH(_endpos); //H값 계산 적용
             G = _lastindex.G + 14; //G값 계산 적용
             CalcF(); //F계산
-            parentTile = _lastindex; //부모를 검색타일로 설정            
+            parentTile = _lastindex; //검색타일을 부모로 설정            
         }
         else //오픈 리스트에 있다면
         {
@@ -44,7 +44,7 @@ public class AstarTile
             {
                 G = _lastindex.G + 14; //G값 다시 적용
                 CalcF(); //새로운 F계산
-                parentTile = _lastindex; //부모를 검색타일로 설정  
+                parentTile = _lastindex; //검색타일을 부모로 설정  
             }
         }
     }
@@ -125,7 +125,7 @@ public class Astar : Singleton<Astar>
         pathList = new List<TileData>();
     }
 
-    public void AstarTest()
+    public void ClearData()
     {
         for (int i = 0; i < mapHeight; i++)
         {
