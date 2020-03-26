@@ -7,11 +7,15 @@ public class GameManager : MonoSingleton<GameManager>
 {
     public int GM_mapWidth;
     public int GM_mapHeight;
+    //모노싱글톤
     TileManager m_TileManager = null;
     EnemyManager m_EnemyManager = null;
     PlayerManager m_PlayerManager = null;
     TurnManager m_TunrManager = null;
     TrapManager m_TrapManager = null;
+    LogManager m_LogManager = null;
+    //싱글톤
+    Astar m_Astar = null;
 
     public int curStage;
 
@@ -25,6 +29,9 @@ public class GameManager : MonoSingleton<GameManager>
         m_EnemyManager = EnemyManager.Instance;
         m_TunrManager = TurnManager.Instance;
         m_TrapManager = TrapManager.Instance;
+        m_LogManager = LogManager.Instance;
+
+        m_Astar = Astar.Instance;
     }
 
     private void Start()
@@ -100,7 +107,7 @@ public class GameManager : MonoSingleton<GameManager>
             //다음층의 오브젝트들을 로드(미구현)
         }
 
-        stageText.text = "현재 층 : " + curStage.ToString();
+        stageText.text = "Floor : " + curStage.ToString();
     }
 
     //이전 층으로 돌아갈때
@@ -120,6 +127,6 @@ public class GameManager : MonoSingleton<GameManager>
             
         }
 
-        stageText.text = "현재 층 : " + curStage.ToString();
+        stageText.text = "Floor : " + curStage.ToString();
     }
 }

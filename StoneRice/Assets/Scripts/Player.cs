@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     TileManager m_TileManager;
     FOV fov;
 
-    int viewRange;
+    int viewRange;   
 
     private void Awake()
     {
@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
     {
         m_TurnManager.turnState = TURN_STATE.PLAYER_TURN;
         prePos = transform.position;
+
+
     }
 
     //층을 옮길때마다 층의 타일맵 정보를 받아와야함

@@ -37,11 +37,8 @@ public class Enemy : MonoBehaviour
     public Position playerPos;
     public ENEMYSTATE enemyState;
 
-    public int mapWidth;
-    public int mapHeight;
-
-    //ASTAR 테스트
-    float rayDistance;
+    int mapWidth;
+    int mapHeight;  
 
     public void EnemyInit()
     {
@@ -53,16 +50,9 @@ public class Enemy : MonoBehaviour
         
         //꼭 필요할까
         mapWidth = TileManager.Instance.mapWidth;
-        mapHeight = TileManager.Instance.mapHeight;
-        
-
-        rayDistance = 15f;
+        mapHeight = TileManager.Instance.mapHeight;          
     }
-
-    //private void Update()
-    //{
-    //    AstarTestRayCast();
-    //}
+  
 
     //몬스터 타입에 따라 한턴 프로그레스 내용 변경? 
     //스텟은 어떻게?
@@ -105,17 +95,17 @@ public class Enemy : MonoBehaviour
         int rndNum = Random.Range(0, 8);
     }
 
-    private float degreeToRadian(int _degree)
+    protected float degreeToRadian(int _degree)
     {
         return _degree * (Mathf.PI / 180);
     }
 
-    private float distance(float _a, float _b)
+    protected float distance(float _a, float _b)
     {
         return _a > _b ? _a : _b;
     }
 
-    private float diagonalDistance(int _x0, int _y0, int _x1, int _y1)
+    protected float diagonalDistance(int _x0, int _y0, int _x1, int _y1)
     {
         int dx = _x1 - _x0;
         int dy = _y1 - _y0;
@@ -125,8 +115,13 @@ public class Enemy : MonoBehaviour
 
     public void CalcEnemyFov(Tile[,] _tilemap)
     {
+        bool isFindPlayer = false;
+
         for (int i = 0; i < 360; i++) //1도씩 360도 계산
         {
+            //플레이어를 찾았으면 시야 검색 중지
+            if (isFindPlayer) break;
+
             float degree = degreeToRadian(i);
 
             int nx = Mathf.RoundToInt(Mathf.Cos(degree) * enemyData.viewRange) + enemyData.position.PosX;
@@ -147,56 +142,34 @@ public class Enemy : MonoBehaviour
                     break; //그 뒤로는 검색 중지
                 }
                 else
-                {          
+                {
                     //시야거리 안에 플레이어가 있다면
-                    if(tileX == playerPos.PosX && tileY == playerPos.PosY)
+                    if (tileX == playerPos.PosX && tileY == playerPos.PosY)
                     {
-                        //사정거리 안에 있으면
+                        //공격 사거리 안에 있다면
                         if(enemyData.atkRange >= diagonalDistance(enemyData.position.PosX, enemyData.position.PosY, playerPos.PosX, playerPos.PosY))
                         {
+                            //공격
                             enemyState = ENEMYSTATE.ATTACK;
+                            isFindPlayer = true;
+                            break;
                         }
+                        //그냥 보이기만 하는거라면
                         else
                         {
+                            //추적
                             enemyState = ENEMYSTATE.TRACKING;
-                        }                      
+                            isFindPlayer = true;
+                            break;
+                        }
+                    }
+                    //아무것도 안 보인다면
+                    else
+                    {
+                        enemyState = ENEMYSTATE.IDLE;
                     }
                 }
             }
         }
-    }
-    //void AstarTestRayCast()
-    //{
-    //    if (Input.GetMouseButtonDown(0))
-    //    {         
-    //        Vector3 mousePosition;
-    //        mousePosition = Input.mousePosition;
-    //        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-    //        RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward, rayDistance);
-    //        Debug.DrawRay(mousePosition, transform.forward * 15, Color.red, 0.3f);
-    //        if (hit)
-    //        {
-    //            Debug.Log(hit.transform.position);
-    //            Position destination;
-    //            destination.PosX = (int)hit.transform.position.x;
-    //            destination.PosY = (int)hit.transform.position.y;
-
-    //            StopCoroutine("moveMan");
-    //            Astar.Instance.AstarTest();
-    //            astarPath = Astar.Instance.PathFinding(position, destination);
-    //            StartCoroutine("moveMan");
-    //        }
-    //    }
-    //}
-
-    //IEnumerator moveMan()
-    //{
-    //    for(int i = 0; i < astarPath.Count; i++)
-    //    {
-    //        position = astarPath[i].position;
-    //        transform.position = new Vector2(position.PosX, position.PosY);
-    //        yield return new WaitForSeconds(0.2f);
-    //    }
-    //}
+    }   
 }

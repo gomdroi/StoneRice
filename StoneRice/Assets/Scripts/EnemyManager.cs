@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class EnemyManager : MonoSingleton<EnemyManager>
 {    
-    GameObject enemy1Prefab;   
+    GameObject enemyPrefab;   
 
     public List<GameObject> enemyList;
     public List<Enemy> enemyInfoList;
 
     private void Awake()
     {
-        enemy1Prefab = Resources.Load("Prefabs/Enemy1") as GameObject;
+        enemyPrefab = Resources.Load("Prefabs/Enemy") as GameObject;
     }
 
     private void Start()
@@ -30,7 +30,7 @@ public class EnemyManager : MonoSingleton<EnemyManager>
 
     void Call_Jelly_Enemy()
     {
-        var oEnemy = Instantiate(enemy1Prefab, new Vector2(TileManager.instance.stairUpPos.PosX, TileManager.instance.stairUpPos.PosY), Quaternion.identity);
+        var oEnemy = Instantiate(enemyPrefab, new Vector2(TileManager.instance.stairUpPos.PosX, TileManager.instance.stairUpPos.PosY), Quaternion.identity);
         oEnemy.GetComponent<Corrosive_Jelly>().EnemyInit();
         oEnemy.GetComponent<Corrosive_Jelly>().Init();
         enemyList.Add(oEnemy);
