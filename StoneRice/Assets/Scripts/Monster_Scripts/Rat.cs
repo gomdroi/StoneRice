@@ -2,26 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Corrosive_Jelly : Enemy
+public class Rat : Enemy
 {
     public void Init()
     {
-        enemyData.maxHp = 10;
-        enemyData.curHp = 10;
+        enemyData.EnemyName = "쥐";
+        enemyData.maxHp = 8;
+        enemyData.curHp = 8;
         enemyData.maxMp = 10;
         enemyData.maxMp = 10;
-        enemyData.atk = 3;
+        enemyData.atk = 2;
         enemyData.atkRange = 1.5f;
-        enemyData.def = 2;
-        enemyData.viewRange = 5;
+        enemyData.def = 0;
+        enemyData.viewRange = 11;
+        enemyData.expValue = 10;
     }
 
     public override void TurnProgress()
     {
-        playerPos = PlayerManager.Instance.player.position; //플레이어 포지션 확인
-        
-        //상황판단 부분
+        if (isDead)
+        {
+            DestroySequence();
+            return;
+        }
 
+        playerPos = PlayerManager.Instance.player.playerData.position; //플레이어 포지션 확인
+
+        //상황판단 부분
+        //if(enemyData.curHp / (float)enemyData.maxHp <= 0.5)
         //시야에서 플레이어를 탐색
         CalcEnemyFov(TileManager.Instance.tileMapInfoArray);
 
@@ -32,20 +40,17 @@ public class Corrosive_Jelly : Enemy
                 break;
             case ENEMYSTATE.TRACKING:
                 //플레이어를 대상으로 에이스타 사용 추적 이동               
-                TrackPlayer();                                         
+                TrackPlayer();
                 break;
             case ENEMYSTATE.ATTACK:
                 //공격행동을 수행함.
-                LogManager.Instance.SimpleLog("누군가가 공격했다");
+                BattleManager.Instance.NormalAttack(PlayerManager.Instance.player, this);
                 //그 뒤에 다시 트래킹으로 변환
                 break;
             case ENEMYSTATE.RUNNINGAWAY:
                 break;
         }
-    }
-
-    void corrosiveAttack()
-    {
-
+        HideEnemy();
+        HpBar_Update();
     }
 }

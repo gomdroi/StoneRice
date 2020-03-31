@@ -25,7 +25,9 @@ public class AstarTile
 
     public void SetTile(AstarTile _lastindex, List<AstarTile> _openlist,Position _endpos)
     {
-        if (tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN) return; //이동 할 수 없는 타일이면 리턴
+        if (tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN ||
+            tileData.tileRestriction == TILE_RESTRICTION.OCCUPIED) return; //이동 할 수 없는 타일이면 리턴
+        
         //비행형일시 다른 제한값 필요
         //몬스터의 검색범위 한정 필요
 
@@ -127,6 +129,8 @@ public class Astar : Singleton<Astar>
 
     public void ClearData()
     {
+        tileMapInfo = TileManager.Instance.tileMapInfoArray;
+
         for (int i = 0; i < mapHeight; i++)
         {
             for (int j = 0; j < mapWidth; j++)
@@ -212,185 +216,4 @@ public class Astar : Singleton<Astar>
             MakePath(_tile, _beginpos); //다시 호출
         }
     }
-
-    void AddOpenList0()
-    {
-        Position searchPosition = closeList[lastIndex].position;
-
-        //좌상단 검색
-        if (MoveableCheck(searchPosition, -1, 1)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-
-        //상단 검색
-        if (MoveableCheck(searchPosition, 0, 1)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX, searchPosition.PosY + 1].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX, searchPosition.PosY + 1].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX, searchPosition.PosY + 1].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX, searchPosition.PosY + 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX, searchPosition.PosY + 1].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX, searchPosition.PosY + 1].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX, searchPosition.PosY + 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-
-        //우상단 검색
-        if (MoveableCheck(searchPosition, 1, 1)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX + 1, searchPosition.PosY + 1].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY + 1].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY + 1].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY + 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX + 1, searchPosition.PosY + 1].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX + 1, searchPosition.PosY + 1].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX + 1, searchPosition.PosY + 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-
-        //좌측 검색
-        if (MoveableCheck(searchPosition, -1, 0)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX - 1, searchPosition.PosY].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX - 1, searchPosition.PosY]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX - 1, searchPosition.PosY].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX - 1, searchPosition.PosY].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX - 1, searchPosition.PosY].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-
-        //우측 검색
-        if (MoveableCheck(searchPosition, +1, 0)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX + 1, searchPosition.PosY].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX + 1, searchPosition.PosY]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX + 1, searchPosition.PosY].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX + 1, searchPosition.PosY].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX + 1, searchPosition.PosY].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-
-        //좌하단 검색
-        if (MoveableCheck(searchPosition, -1, -1)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX - 1, searchPosition.PosY - 1].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY - 1].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY - 1].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX - 1, searchPosition.PosY - 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX - 1, searchPosition.PosY - 1].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX - 1, searchPosition.PosY - 1].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX - 1, searchPosition.PosY - 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-
-        //하단 검색
-        if (MoveableCheck(searchPosition, 0, -1)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX, searchPosition.PosY - 1].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX, searchPosition.PosY - 1].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX - 1, searchPosition.PosY + 1]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX, searchPosition.PosY - 1].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX, searchPosition.PosY - 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX, searchPosition.PosY - 1].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX, searchPosition.PosY - 1].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX, searchPosition.PosY - 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-
-        //우하단 검색
-        if (MoveableCheck(searchPosition, 1, -1)) //이동 가능한 타일인지 체크
-        {
-            if (!astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1].isListed) //오픈 리스트에 없다면
-            {
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1].isListed = true; //트루로 바꾸고
-                openList.Add(astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1]); //오픈 리스트에 추가
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1].G = closeList[lastIndex].G + 14; //G값 계산 적용
-                astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정                              
-            }
-            else //오픈 리스트에 있다면
-            {
-                if (closeList[lastIndex].G + 14 < astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1].G) //기존 G보다 새로운 G가 작다면
-                {
-                    astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1].G = closeList[lastIndex].G + 14; //G값 다시 적용
-                    astarTiles[searchPosition.PosX + 1, searchPosition.PosY - 1].parentTile = closeList[lastIndex]; //부모를 검색타일로 설정  
-                }
-            }
-        }
-    } //초안 
-    public bool MoveableCheck(Position _position, int _targetX, int _targetY, bool _isfly = false)
-    {
-        //타일 배열 벗어났는지 체크
-        if(_position.PosX - 1 < 0 || _position.PosY - 1 < 0 || _position.PosX + 1 > mapWidth || _position.PosY + 1 > mapHeight)
-        {
-            return false;
-        }
-        
-        //이동 가능 타일인지 체크
-        if(astarTiles[_position.PosX + _targetX, _position.PosY + _targetY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN)
-        {
-            return false;
-        }
-
-        return true;
-    } //이동가능 체크 초안
 }

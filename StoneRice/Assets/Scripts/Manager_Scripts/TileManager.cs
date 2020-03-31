@@ -34,7 +34,8 @@ public class TileManager : MonoSingleton<TileManager>
 
     public BaseTileFactory bTileFactory;
     public CaveMapGenerator caveGen;
-    
+
+    //public EnemyManager m_enemyManager;
     
     private void Awake()
     {
@@ -43,6 +44,8 @@ public class TileManager : MonoSingleton<TileManager>
         
         bTileFactory = GetComponent<BaseTileFactory>();
         caveGen = GetComponent<CaveMapGenerator>();
+
+        //m_enemyManager = EnemyManager.Instance;
     }
 
     public void Init()
@@ -71,6 +74,8 @@ public class TileManager : MonoSingleton<TileManager>
             for (int j = 0; j < mapWidth; j++)
             {
                 tileMapInfoArray[j, i].tileData.tileType = BASETILETYPE.EMPTY;
+                tileMapInfoArray[j, i].tileData.isSeen = false;
+                tileMapInfoArray[j, i].tileData.isSighted = false;
             }
         }
 
@@ -104,68 +109,62 @@ public class TileManager : MonoSingleton<TileManager>
         }
     }
 
-    public void SaveStage()
+    public void SaveStage(int _stageNum, bool _isNewStage = false)
     {
-        Stage curStage = new Stage();
-
-        curStage.mapHeight = mapHeight;
-        curStage.mapWidth = mapWidth;
-        TileData[,] tileInfoClone = copyStageData();
-
-        curStage.stage = new TileData[curStage.mapWidth, curStage.mapHeight];
-        //오브젝트 리스트 세이브 추가해야함
-
-        curStage.stairDownPos = stairDownPos;
-        curStage.stairUpPos = stairUpPos;
-
-        //타일 데이터 카피
-        for (int i = 0; i < mapHeight; i++)
+        if(_isNewStage)
         {
-            for (int j = 0; j < mapWidth; j++)
+            Stage curStage = new Stage();
+
+            curStage.mapHeight = mapHeight;
+            curStage.mapWidth = mapWidth;
+
+            curStage.stage = new TileData[curStage.mapWidth, curStage.mapHeight];
+            //오브젝트 리스트 세이브 추가해야함
+
+            curStage.stairDownPos = stairDownPos;
+            curStage.stairUpPos = stairUpPos;
+
+            //타일 데이터 카피
+            for (int i = 0; i < mapHeight; i++)
             {
-                curStage.stage[j, i] = tileInfoClone[j, i];
+                for (int j = 0; j < mapWidth; j++)
+                {
+                    curStage.stage[j, i] = (TileData)tileMapInfoArray[j, i].tileData.Clone();
+                }
+            }
+
+            Stages.Add(curStage);
+        }
+        else if(!_isNewStage)
+        {
+            for (int i = 0; i < mapHeight; i++)
+            {
+                for (int j = 0; j < mapWidth; j++)
+                {
+                    Stages[_stageNum].stage[j, i] = (TileData)tileMapInfoArray[j, i].tileData.Clone();
+                }
             }
         }
-
-        Stages.Add(curStage);
+        
     }
 
-    public TileData[,] copyStageData()
+    public void LoadStage(int _stageNum)
     {
-        TileData[,] TileInfoClone = new TileData[mapWidth, mapHeight];
-
-        for (int i = 0; i < mapHeight; i++)
-        {
-            for (int j = 0; j < mapWidth; j++)
-            {
-                TileInfoClone[j, i] = (TileData)tileMapInfoArray[j, i].tileData.Clone();
-                //TileInfoClone[j, i].position = tileMapInfoArray[j, i].tileData.position;
-                //TileInfoClone[j, i].tileRestriction = tileMapInfoArray[j, i].tileData.tileRestriction;
-                //TileInfoClone[j, i].tileType = tileMapInfoArray[j, i].tileData.tileType;
-                //TileInfoClone[j, i].fov_Value = tileMapInfoArray[j, i].tileData.fov_Value;
-            }
-        }
-
-        return TileInfoClone;
-    }
-
-    public void LoadStage(Stage _stageNum)
-    {
-        mapWidth = _stageNum.mapWidth;
-        mapHeight = _stageNum.mapHeight;
+        mapWidth = Stages[_stageNum].mapWidth;
+        mapHeight = Stages[_stageNum].mapHeight;
 
         //바뀐 맵크기에 따른 타일 초기화 상태 세팅 코드 필요(오브젝트 풀/타일회수 재배치)
 
         //오브젝트 리스트 로드 필요함
 
-        stairDownPos = _stageNum.stairDownPos;
-        stairUpPos = _stageNum.stairUpPos;
+        stairDownPos = Stages[_stageNum].stairDownPos;
+        stairUpPos = Stages[_stageNum].stairUpPos;
 
         for (int i = 0; i < mapHeight; i++)
         {
             for (int j = 0; j < mapWidth; j++)
             {
-                tileMapInfoArray[j, i].tileData = (TileData)_stageNum.stage[j, i].Clone();
+                tileMapInfoArray[j, i].tileData = (TileData)Stages[_stageNum].stage[j, i].Clone();
                 //tileMapInfoArray[j, i].tileData.position = _stageNum.stage[j, i].position;
                 //tileMapInfoArray[j, i].tileData.tileType = _stageNum.stage[j, i].tileType;
                 //tileMapInfoArray[j, i].tileData.tileRestriction = _stageNum.stage[j, i].tileRestriction;
@@ -214,6 +213,18 @@ public class TileManager : MonoSingleton<TileManager>
                     break;
                 default:
                     break;
+            }
+        }
+
+        foreach (Tile tile in tileMapInfoArray)
+        {
+            if(!tile.tileData.isSeen)
+            {
+                tile.FOV_spriteRenderer.color = new Color(255, 255, 255, 1);
+            }
+            else if(tile.tileData.isSeen)
+            {
+                tile.FOV_spriteRenderer.color = new Color(255, 255, 255, 0.5f);
             }
         }
     }

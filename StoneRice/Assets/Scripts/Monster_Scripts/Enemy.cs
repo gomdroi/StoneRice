@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 
 public enum ENEMYTYPE
 {
@@ -20,6 +22,7 @@ public struct EnemyData
 {
     public Position position;
     public ENEMYTYPE enemyType;
+    public string EnemyName;
     public int maxHp;
     public int curHp;
     public int maxMp;
@@ -28,14 +31,23 @@ public struct EnemyData
     public float atkRange;
     public int def;
     public int viewRange;
+    public int expValue;
 }
 
 public class Enemy : MonoBehaviour
 {
     public EnemyData enemyData; 
+
     protected List<TileData> astarPath;
     public Position playerPos;
     public ENEMYSTATE enemyState;
+
+    public SpriteRenderer spriteRenderer;
+    public Image Hp_Bar_Front;
+
+    public Action onDeath;
+
+    public bool isDead = false;
 
     int mapWidth;
     int mapHeight;  
@@ -45,9 +57,12 @@ public class Enemy : MonoBehaviour
         enemyData.position.PosX = (int)this.gameObject.transform.position.x;
         enemyData.position.PosY = (int)this.gameObject.transform.position.y;
         astarPath = new List<TileData>();
-        //enemyData = new EnemyData();
         enemyState = ENEMYSTATE.IDLE;
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        Hp_Bar_Front = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
+
+        TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.tileRestriction = TILE_RESTRICTION.OCCUPIED;
+
         //꼭 필요할까
         mapWidth = TileManager.Instance.mapWidth;
         mapHeight = TileManager.Instance.mapHeight;          
@@ -86,20 +101,22 @@ public class Enemy : MonoBehaviour
     {
         Astar.Instance.ClearData();
         astarPath = Astar.Instance.PathFinding(enemyData.position, playerPos); //플레이어로 길 탐색
+
+        //이동전에 검색 가능하게
+        TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE; 
+
         enemyData.position = astarPath[0].position; //한칸만 이동
         transform.position = new Vector2(enemyData.position.PosX, enemyData.position.PosY);
+
+        //이동후에 검색 불가능하게
+        TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.tileRestriction = TILE_RESTRICTION.OCCUPIED;
     }
 
     protected void RandomMovement()
-    {
-        int rndNum = Random.Range(0, 8);
+    {        
+        int rndNum = UnityEngine.Random.Range(0, 8);
     }
-
-    protected float degreeToRadian(int _degree)
-    {
-        return _degree * (Mathf.PI / 180);
-    }
-
+  
     protected float distance(float _a, float _b)
     {
         return _a > _b ? _a : _b;
@@ -122,7 +139,7 @@ public class Enemy : MonoBehaviour
             //플레이어를 찾았으면 시야 검색 중지
             if (isFindPlayer) break;
 
-            float degree = degreeToRadian(i);
+            float degree = i * (Mathf.PI / 180);
 
             int nx = Mathf.RoundToInt(Mathf.Cos(degree) * enemyData.viewRange) + enemyData.position.PosX;
             int ny = Mathf.RoundToInt(Mathf.Sin(degree) * enemyData.viewRange) + enemyData.position.PosY;
@@ -170,6 +187,34 @@ public class Enemy : MonoBehaviour
                     }
                 }
             }
-        }
+        }       
     }   
+
+    public void HideEnemy()
+    {
+        if(!TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.isSighted)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+            spriteRenderer.enabled = false;
+        }
+        else
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+            spriteRenderer.enabled = true;
+        }
+    }
+
+    public void HpBar_Update()
+    {
+        if (enemyData.curHp != 0) Hp_Bar_Front.fillAmount = enemyData.curHp / (float)enemyData.maxHp;
+        else Hp_Bar_Front.fillAmount = 0;
+    }
+
+    public void DestroySequence()
+    {
+        TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE;
+        Destroy(this.gameObject);
+        onDeath();
+        PlayerManager.Instance.player.playerData.nextEXP -= enemyData.expValue; //몹이 죽을 때 경험치를 줌 (여기 있으면 안 됨*)
+    }
 }

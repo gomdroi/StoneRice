@@ -35,9 +35,10 @@ SpriteAtlas:
     - {fileID: 102900000, guid: e88d0c2f565bd074fb877e9c210275f4, type: 3}
     - {fileID: 102900000, guid: 720f0ffb602fe244f94a11687a9e02c6, type: 3}
     - {fileID: 102900000, guid: fc06a8ddb6fe55b40b1b6aff440373d4, type: 3}
+    - {fileID: 102900000, guid: 9babb56161dcef54da9b48a517f99492, type: 3}
     - {fileID: 2800000, guid: e1db5308f33b15346acace86bd4c5dba, type: 3}
     - {fileID: 2800000, guid: 7fa091010beb90645bd41fab95d51f93, type: 3}
-    totalSpriteSurfaceArea: 90112
+    totalSpriteSurfaceArea: 93184
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -52,8 +53,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c0a5db02ab8642741964dfb8eb489fc1, type: 3}
   - {fileID: 21300000, guid: 12c48742b35f26542b701584f759bc3e, type: 3}
   - {fileID: 21300000, guid: 71c80c824a7102b499d602c507610379, type: 3}
+  - {fileID: 21300000, guid: 42dbe343dd918b9429dc993e17e7b4c8, type: 3}
   - {fileID: 21300000, guid: fe0e0453a15786b4080fbe960648ba9b, type: 3}
   - {fileID: 21300000, guid: eaf17a53f07ec814b809ff0f1b3a54d5, type: 3}
+  - {fileID: 21300000, guid: 42d8b0731a2c01b409372227a24099df, type: 3}
   - {fileID: 21300000, guid: f5b9c773e0993404a99b3736350f5908, type: 3}
   - {fileID: 21300000, guid: 6ee96683af9759f419c1dbe91b27e3c2, type: 3}
   - {fileID: 21300000, guid: 0bde01c33214d4a4d936641c05b7120e, type: 3}
@@ -120,6 +123,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 16aa87ce9527f2b4faa1799cffca56e6, type: 3}
   - {fileID: 21300000, guid: 275065dec2d98a54094ce27b7fb1c1b7, type: 3}
   - {fileID: 21300000, guid: 60a327eefeadd9f4788819d43bcbf4ee, type: 3}
+  - {fileID: 21300000, guid: edc3a0fee7c95264c81f8cb4a974f523, type: 3}
   - {fileID: 21300000, guid: 16b2ab2f095cf8e438a1b33cda02c1e5, type: 3}
   - {fileID: 21300000, guid: 0d80af5f080e9c548af6f6d99f0e62f3, type: 3}
   - {fileID: 21300000, guid: b53d3d6fb206933418a419b0c8a5e82c, type: 3}
@@ -141,8 +145,10 @@ SpriteAtlas:
   - potion_golden
   - potion_fizzy
   - orc_floor_3
+  - rat
   - golden
   - trap_alarm
+  - elephant_slug
   - clear
   - lair_1_old
   - lava_old
@@ -209,6 +215,7 @@ SpriteAtlas:
   - bubbly
   - brilliant_blue_new
   - orc_floor_5
+  - jelly
   - white_new
   - trap_teleport
   - brown_new

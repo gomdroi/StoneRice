@@ -62,14 +62,14 @@ public class FOV
 
                 if(_tilemap[tileX,tileY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN) //벽을 만나면
                 {
-                    if(_tilemap[tileX, tileY].tileData.isSeen != true) _tilemap[tileX, tileY].tileData.isSeen = true;
+                    if(!_tilemap[tileX, tileY].tileData.isSeen) _tilemap[tileX, tileY].tileData.isSeen = true;
                     _tilemap[tileX, tileY].tileData.isSighted = true;
                     _tilemap[tileX,tileY].FOV_spriteRenderer.color = new Color(255, 255, 255, 0f);
                     break; //그 뒤로는 검색 중지
                 }
                 else
                 {           
-                    if (_tilemap[tileX, tileY].tileData.isSeen != true) _tilemap[tileX, tileY].tileData.isSeen = true;
+                    if (!_tilemap[tileX, tileY].tileData.isSeen) _tilemap[tileX, tileY].tileData.isSeen = true;
                     _tilemap[tileX, tileY].tileData.isSighted = true;
                     _tilemap[tileX, tileY].FOV_spriteRenderer.color = new Color(255, 255, 255, 0f);                                
                 }

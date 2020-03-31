@@ -9,13 +9,13 @@ public struct Position
     public int PosY;
 }
 
-public class TileData : ICloneable
+public struct TileData : ICloneable
 {
     public Position position;
     public BASETILETYPE tileType;
     public TILE_RESTRICTION tileRestriction;
-    public bool isSeen = false;
-    public bool isSighted = false;
+    public bool isSeen;
+    public bool isSighted;
 
     public object Clone()
     {
@@ -36,9 +36,16 @@ public class Tile : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public SpriteRenderer FOV_spriteRenderer;
 
+    //디버깅
+    public TILE_RESTRICTION DT;
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         FOV_spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();  
+    }
+
+    private void Update()
+    {
+        DT = tileData.tileRestriction;
     }
 }

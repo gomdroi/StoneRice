@@ -2,114 +2,190 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PLAYERSTATE
+{
+    NONE,
+    INPUT,
+    OUTPUT
+}
 
+public struct PlayerData
+{
+    public string playerName;
+    public Position position;
+    public int maxHp;
+    public int curHp;
+    public int maxMp;
+    public int curMp;
+    public int strength;
+    public int intelligence;
+    public int dexterity;
+
+    public float atkRange;
+    public int AC;
+    public int EV;
+    public int XL;
+    public int nextEXP;
+    public int curEXP;
+
+    public int viewRange;
+
+    public int Gold;
+
+    public List<Debuff> debuffs;
+}
 
 public class Player : MonoBehaviour
 {
-    public Position position;
-    public Vector3 prePos;
-    //실제 타일 배열
-    public Tile[,] tileMapInfo;
+    public PlayerData playerData; //데이터
+    public Vector3 prePos; //이전 포지션
+    public bool isTurnDone; //턴 종료 판단
+    public int NextRest; //휴식 카운트    
+    public bool isDead = false;
+    public Tile[,] tileMapInfo; //실제 타일 배열
+    public PLAYERSTATE playerState;
+
     public int mapHeight;
     public int mapWidth;
     TurnManager m_TurnManager;
     TileManager m_TileManager;
-    FOV fov;
-
-    int viewRange;   
+    EnemyManager m_EnemyManager;
+    FOV fov;  
 
     private void Awake()
     {
         m_TurnManager = TurnManager.Instance;
         m_TileManager = TileManager.Instance;
+        m_EnemyManager = EnemyManager.Instance;
         fov = new FOV();
     }
 
-    private void Start()
+    private void Start() //게임오브젝트 생성시에 
     {
-        m_TurnManager.turnState = TURN_STATE.PLAYER_TURN;
-        prePos = transform.position;
-
-
+        m_TurnManager.turnState = TURN_STATE.PLAYER_TURN; //플레이어에게 턴을 주고
+        prePos = transform.position; //이전 포지션에 생성포지션을 넣고
+        playerData.playerName = "김철수"; //이름 주고 (임시)
+        SetStats(); //기본 스탯값 입력
+        playerData.debuffs = new List<Debuff>(); 
+        NextRest = 0;
+        isTurnDone = false;       
+        fov.CalcFov(tileMapInfo, playerData.position.PosX, playerData.position.PosY, playerData.viewRange);
+        UIManager.Instance.UI_Update();
     }
 
-    //층을 옮길때마다 층의 타일맵 정보를 받아와야함
+    void SetStats()
+    {
+        playerData.maxHp = 20;
+        playerData.curHp = 20;
+        playerData.maxMp = 10;
+        playerData.curMp = 10;
+        playerData.strength = 5;
+        playerData.intelligence = 5;
+        playerData.dexterity = 5;
+
+        playerData.atkRange = 1;
+        playerData.AC = 0;
+        playerData.EV = 0;
+        playerData.XL = 1;
+        playerData.nextEXP = 50;
+        playerData.curEXP = 0;
+
+        playerData.viewRange = 9;
+
+        playerData.Gold = 0;
+    }
+
+    //층을 옮길때마다 층의 정보를 받아와야함
     public void PlayerInit()
     {
         tileMapInfo = TileManager.Instance.tileMapInfoArray;
-        position.PosX = (int)this.gameObject.transform.position.x;
-        position.PosY = (int)this.gameObject.transform.position.y;
+        playerData.position.PosX = (int)this.gameObject.transform.position.x;
+        playerData.position.PosY = (int)this.gameObject.transform.position.y;
         mapHeight = TileManager.Instance.mapHeight;
         mapWidth = TileManager.Instance.mapWidth;
 
-        viewRange = 7;
 
-        fov.Init();
-        fov.CalcFov(tileMapInfo, position.PosX, position.PosY, viewRange);
+        fov.Init();       
     }
 
     public void TurnOverCheck()
-    {
-        if(prePos != transform.position)
+    {      
+        if (isTurnDone)
         {
-            prePos = transform.position;
-            position.PosX = (int)transform.position.x;
-            position.PosY = (int)transform.position.y;
-            fov.CalcFov(tileMapInfo, position.PosX, position.PosY, viewRange);
-            m_TurnManager.turnState = TURN_STATE.INTERACTIVE;
+            prePos = transform.position; //이전 포지션 저장
+            playerData.position.PosX = (int)transform.position.x; //트랜스폼 현재 포지션으로 정보 변경
+            playerData.position.PosY = (int)transform.position.y;
+            fov.CalcFov(tileMapInfo, playerData.position.PosX, playerData.position.PosY, playerData.viewRange); //시야 변경           
+            isTurnDone = false; //턴 상태 돌려줌
+            m_TurnManager.turnState = TURN_STATE.INTERACTIVE; //상호작용 턴으로 변경
         }       
     }
 
     public void PlayerInput()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        int tPosX = (int)transform.position.x;
+        int tPosY = (int)transform.position.y;
+        int targetPosX = 0;
+        int targetPosY = 0;
+
+        bool isMove = false;
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8)) 
         {
-            if (transform.position.y + 1 < mapHeight) //타일 최상단이 아닐 경우
-            {
-                if (tileMapInfo[(int)transform.position.x, (int)transform.position.y + 1].tileData.tileRestriction == TILE_RESTRICTION.MOVEABLE)
-                {
-                    transform.position = tileMapInfo[(int)transform.position.x, (int)transform.position.y + 1].transform.position;
-                }
-            }
+            targetPosX = tPosX;
+            targetPosY = tPosY + 1;
+            isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
         {
-            if (transform.position.y - 1 >= 0) //타일 최하단이 아닐 경우
-            {
-                if (tileMapInfo[(int)transform.position.x, (int)transform.position.y - 1].tileData.tileRestriction == TILE_RESTRICTION.MOVEABLE)
-                {
-                    transform.position = tileMapInfo[(int)transform.position.x, (int)transform.position.y - 1].transform.position;
-                }
-            }
+            targetPosX = tPosX;
+            targetPosY = tPosY - 1;
+            isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
         {
-            if (transform.position.x - 1 >= 0) //타일 가장 좌측이 아닐 경우
-            {
-                if (tileMapInfo[(int)transform.position.x - 1, (int)transform.position.y].tileData.tileRestriction == TILE_RESTRICTION.MOVEABLE)
-                {
-                    transform.position = tileMapInfo[(int)transform.position.x - 1, (int)transform.position.y].transform.position;
-                }
-            }
+            targetPosX = tPosX - 1;
+            targetPosY = tPosY;
+            isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
         {
-            if (transform.position.x + 1 < mapWidth) //타일 가장 우측이 아닐 경우
-            {
-                if (tileMapInfo[(int)transform.position.x + 1, (int)transform.position.y].tileData.tileRestriction == TILE_RESTRICTION.MOVEABLE)
-                {
-                    transform.position = tileMapInfo[(int)transform.position.x + 1, (int)transform.position.y].transform.position;
-                }
-            }
+            targetPosX = tPosX + 1;
+            targetPosY = tPosY;
+            isMove = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad7))
+        {
+            targetPosX = tPosX - 1;
+            targetPosY = tPosY + 1;
+            isMove = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            targetPosX = tPosX + 1;
+            targetPosY = tPosY + 1;
+            isMove = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            targetPosX = tPosX - 1;
+            targetPosY = tPosY - 1;
+            isMove = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            targetPosX = tPosX + 1;
+            targetPosY = tPosY - 1;
+            isMove = true;
         }
         else if (Input.GetKeyDown(KeyCode.Comma))
-        {         
-            if (transform.position.x == m_TileManager.stairDownPos.PosX && transform.position.y == m_TileManager.stairDownPos.PosY)
+        {
+            if (tPosX == m_TileManager.stairDownPos.PosX && tPosY == m_TileManager.stairDownPos.PosY)
             {
                 GameManager.Instance.GoDownStage();
-                transform.position = new Vector2(m_TileManager.stairUpPos.PosX, m_TileManager.stairUpPos.PosY);
+                transform.position = new Vector2(m_TileManager.stairUpPos.PosX, m_TileManager.stairUpPos.PosY);              
             }
-            else if(transform.position.x == m_TileManager.stairUpPos.PosX && transform.position.y == m_TileManager.stairUpPos.PosY)
+            else if (tPosX == m_TileManager.stairUpPos.PosX && tPosY == m_TileManager.stairUpPos.PosY)
             {
                 int preStage = GameManager.Instance.curStage;
                 GameManager.Instance.GoUpStage();
@@ -118,6 +194,109 @@ public class Player : MonoBehaviour
                     transform.position = new Vector2(m_TileManager.stairDownPos.PosX, m_TileManager.stairDownPos.PosY);
                 }
             }
+            isTurnDone = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Space)) //휴식
+        {
+            NextRest += 2;
+            
+            isTurnDone = true;
+        }
+       
+        if (!isMove) return;
+
+        //방향에 적이 있으면
+        for(int i = 0; i < m_EnemyManager.enemyInfoList.Count; i++)
+        {
+            if (m_EnemyManager.enemyInfoList[i].enemyData.position.PosX == targetPosX && m_EnemyManager.enemyInfoList[i].enemyData.position.PosY == targetPosY)
+            {
+                BattleManager.Instance.NormalAttack(this, m_EnemyManager.enemyInfoList[i]);               
+                isTurnDone = true;
+                break;
+            }
+        }
+        if (isTurnDone) return;
+
+        //인탱글 체크       
+        for (int i = 0; i < playerData.debuffs.Count; i++)
+        {
+            if (playerData.debuffs[i].debuffType == DEBUFFTYPE.ENTANGLE)
+            {
+                LogManager.Instance.SimpleLog("묶여서 움직일 수 없다");
+                isTurnDone = true;
+            }
+        }            
+        if (isTurnDone) return;
+
+        //없으면 이동체크
+        if (targetPosX < 0 || targetPosX >= mapWidth)
+        {
+            LogManager.Instance.SimpleLog("그곳으로 갈 수 없다");
+            return;
+        }
+        else if (targetPosY < 0 || targetPosY >= mapHeight)
+        {
+            LogManager.Instance.SimpleLog("그곳으로 갈 수 없다");
+            return;
+        }
+
+        if (tileMapInfo[targetPosX, targetPosY].tileData.tileRestriction == TILE_RESTRICTION.MOVEABLE)
+        {
+            transform.position = tileMapInfo[targetPosX, targetPosY].transform.position;
+            isTurnDone = true;
+        }             
+        else if (tileMapInfo[targetPosX, targetPosY].tileData.tileRestriction == TILE_RESTRICTION.FORBIDDEN)
+        {
+            LogManager.Instance.SimpleLog("그곳으로 갈 수 없다");
+            isTurnDone = true;
+        }
+
+        NextRest += 1;
+    }
+
+    public void XL_Check()
+    {
+        if(playerData.nextEXP <= 0)
+        {
+            playerData.nextEXP = 45;
+            playerData.nextEXP = playerData.nextEXP * (playerData.XL * 2);
+            LevelUp();          
+        }
+    }
+
+    public void LevelUp()
+    {
+        playerData.XL += 1;
+        playerData.maxHp = playerData.maxHp + playerData.strength;
+        playerData.curHp = playerData.curHp + playerData.strength;
+    }
+
+    public void DebuffCheck()
+    {
+        if (playerData.debuffs == null) return;       
+        for(int i = 0; i < playerData.debuffs.Count; i++)
+        {          
+            Debuff temp = playerData.debuffs[i];
+            temp.duration = playerData.debuffs[i].duration - 1;
+            playerData.debuffs[i] = temp;
+
+            if(playerData.debuffs[i].duration <= 0)
+            {
+                playerData.debuffs.Remove(playerData.debuffs[i]);
+            }
+        }
+    }
+
+    public void RestCheck()
+    {
+        if (NextRest >= 4)
+        {
+            playerData.curHp += 1;
+            if (playerData.curHp >= playerData.maxHp)
+            {
+                playerData.curHp = playerData.maxHp;
+            }
+            NextRest = 0;
         }
     }
 }

@@ -39,7 +39,10 @@ public class PlayerManager : MonoSingleton<PlayerManager>
         var oPlayer = Instantiate(playerPrefab, new Vector2(TileManager.instance.stairDownPos.PosX, TileManager.instance.stairDownPos.PosY), Quaternion.identity);
         player = oPlayer.GetComponent<Player>();
         player.PlayerInit();
-        
+
+        //유아이에 생성과 동시에 정보 전달
+        UIManager.instance.Init();        
+
         Camera.main.transform.SetParent(oPlayer.transform);
         Camera.main.transform.position = new Vector3(oPlayer.transform.position.x, oPlayer.transform.position.y, -10);
     }

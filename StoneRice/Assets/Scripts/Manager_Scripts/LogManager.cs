@@ -9,25 +9,18 @@ public class LogManager : MonoSingleton<LogManager>
 
     private ScrollRect scrollRect = null;
 
-    private void Start()
+    private void Awake()
     {
         LogText = GameObject.Find("Log_Text").GetComponent<Text>();
         scrollRect = GameObject.Find("Log_Window").GetComponent<ScrollRect>();
-
-        if (LogText != null)
-        {
-            LogText.text += "Hello Log Window!" + "\n";
-        }
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
+    private void Start()
+    {       
+        if (LogText != null)
         {
-            LogText.text += "Mouse Down Position (" + "X : " + Input.mousePosition.x + " Y : " + Input.mousePosition.y + ")\n";
+            LogText.text += "LogManager On" + "\n";
         }
-
-        scrollRect.verticalNormalizedPosition = 0.0f;
     }
 
     public void SimpleLog(string _log)
