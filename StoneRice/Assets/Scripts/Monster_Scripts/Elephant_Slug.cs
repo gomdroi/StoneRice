@@ -7,6 +7,7 @@ public class Elephant_Slug : Enemy
     public void Init()
     {
         enemyData.EnemyName = "거대한 민달팽이";
+        enemyData.enemyType = ENEMYTYPE.ELEPHANTSLUG;
         enemyData.maxHp = 50;
         enemyData.curHp = 50;
         enemyData.maxMp = 10;
@@ -33,7 +34,7 @@ public class Elephant_Slug : Enemy
                
         if(rndActionNum <= 5) //0,1,2,3,4,5
         {
-            if (enemyData.atkRange >= diagonalDistance(enemyData.position.PosX, enemyData.position.PosY, playerPos.PosX, playerPos.PosY))
+            if (enemyData.atkRange >= Vector2.Distance(this.transform.position, new Vector2(playerPos.PosX, playerPos.PosY)))
             {
                 enemyState = ENEMYSTATE.ATTACK;
             }

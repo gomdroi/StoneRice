@@ -7,6 +7,7 @@ public class Rat : Enemy
     public void Init()
     {
         enemyData.EnemyName = "쥐";
+        enemyData.enemyType = ENEMYTYPE.RAT;
         enemyData.maxHp = 8;
         enemyData.curHp = 8;
         enemyData.maxMp = 10;

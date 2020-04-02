@@ -36,7 +36,7 @@ public class PlayerManager : MonoSingleton<PlayerManager>
 
     void CallPlayer()
     {
-        var oPlayer = Instantiate(playerPrefab, new Vector2(TileManager.instance.stairDownPos.PosX, TileManager.instance.stairDownPos.PosY), Quaternion.identity);
+        var oPlayer = Instantiate(playerPrefab, new Vector2(TileManager.instance.stairUpPos.PosX, TileManager.instance.stairUpPos.PosY), Quaternion.identity);
         player = oPlayer.GetComponent<Player>();
         player.PlayerInit();
 

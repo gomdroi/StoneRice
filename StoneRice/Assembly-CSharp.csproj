@@ -61,11 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Astar.cs" />
-    <Compile Include="Assets\Scripts\BaseTileFactory.cs" />
     <Compile Include="Assets\Scripts\CaveMapGenerator.cs" />
     <Compile Include="Assets\Scripts\FOV.cs" />
     <Compile Include="Assets\Scripts\Inventory.cs" />
+    <Compile Include="Assets\Scripts\Manager_Scripts\BaseTileFactory.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\BattleManager.cs" />
+    <Compile Include="Assets\Scripts\Manager_Scripts\EnemyFactory.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\EnemyManager.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\InteractionManager.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Assets\Scripts\Manager_Scripts\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\ResourceManager.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\TileManager.cs" />
+    <Compile Include="Assets\Scripts\Manager_Scripts\TrapFactory.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\TrapManager.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\TurnManager.cs" />
     <Compile Include="Assets\Scripts\Manager_Scripts\UIManager.cs" />
@@ -88,7 +90,6 @@
     <Compile Include="Assets\Scripts\Stair.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
     <Compile Include="Assets\Scripts\Trap.cs" />
-    <Compile Include="Assets\Scripts\TrapFactory.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/user/Documents/GitHub/StoneRice/StoneRice/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

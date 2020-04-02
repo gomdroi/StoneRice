@@ -58,6 +58,7 @@ public class GameManager : MonoSingleton<GameManager>
             m_TrapManager.Init(); //트랩 설치를 위해 맵정보 받아오기
             m_TrapManager.PlaceTraps(10); //함정 설치
             m_TrapManager.SaveTraps(curStage, true); //초기 함정 상태 저장
+            m_EnemyManager.CallRandomEnemy(curStage);
 
             m_BattleManager.Init(); //배틀 매니저 초기 설정
         }
@@ -104,20 +105,30 @@ public class GameManager : MonoSingleton<GameManager>
             m_TileManager.CreateCaveMap(); //새로운 맵을 만듬
             m_TileManager.SaveStage(curStage, true); //만든 맵을 저장
             m_TileManager.FindStairs(); //계단 재배치
-                     
+
+            m_EnemyManager.reArrangeEnemy(curStage); //몬스터 : 내려갈때(new) - 현재층을 꺼준다.
+
             curStage += 1; //스테이지 증가
 
             m_TrapManager.PlaceTraps(10); //새로운 트랩을 깜
             m_TrapManager.SaveTraps(curStage, true); //새로운 스테이지의 트랩을 저장
+           
+            m_EnemyManager.CallRandomEnemy(curStage);
         }        
         else //해당층에 간적이 있다면
         {
             m_TileManager.SaveStage(curStage); //현재층 맵 상태를 저장
             m_TrapManager.SaveTraps(curStage); //현재층 트랩 상태를 저장
+
+            m_EnemyManager.reArrangeEnemy(curStage, true,false); //몬스터 : 내려갈때(old) - 현재층을 꺼주고 다음층을 켜준다
+
             curStage += 1; //스테이지 증가
+
             m_TileManager.LoadStage(curStage); //다음층의 스테이지를 로드
             m_TrapManager.LoadTraps(curStage); //다음층의 트랩 로드
             m_TileManager.FindStairs(); //계단 재배치
+
+            
         }
 
         stageText.text = "Floor : " + curStage.ToString();
@@ -134,10 +145,16 @@ public class GameManager : MonoSingleton<GameManager>
         {
             m_TileManager.SaveStage(curStage); //현재층 맵정보 저장
             m_TrapManager.SaveTraps(curStage); //현재층 트랩정보 저장
+
+            m_EnemyManager.reArrangeEnemy(curStage, false, true); //몬스터 : 올라갈때 - 현재층을 꺼주고 이전층을 켜준다
+
             curStage -= 1; //스테이지 감소
+
             m_TileManager.LoadStage(curStage); //이전층을 로드
             m_TrapManager.LoadTraps(curStage); //이전층 트랩 로드
-            m_TileManager.FindStairs(); //계단 재배치          
+            m_TileManager.FindStairs(); //계단 재배치     
+            
+            
         }
 
         stageText.text = "Floor : " + curStage.ToString();

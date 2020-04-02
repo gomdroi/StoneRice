@@ -15,9 +15,6 @@ public struct Stage
     //    mapWidth = width;
     //    mapHeight = height;
     //}
-
-    //오브젝트 리스트 추가해야함
-    //아이템 리스트는 나중에 아이템매니저에서 해결하자 여기선 타일관련해서만 정리
 }
 
 public class TileManager : MonoSingleton<TileManager>
@@ -33,9 +30,7 @@ public class TileManager : MonoSingleton<TileManager>
     public List<GameObject> stairs;
 
     public BaseTileFactory bTileFactory;
-    public CaveMapGenerator caveGen;
-
-    //public EnemyManager m_enemyManager;
+    public CaveMapGenerator caveGen;  
     
     private void Awake()
     {
@@ -43,9 +38,7 @@ public class TileManager : MonoSingleton<TileManager>
         this.gameObject.AddComponent<CaveMapGenerator>(); 
         
         bTileFactory = GetComponent<BaseTileFactory>();
-        caveGen = GetComponent<CaveMapGenerator>();
-
-        //m_enemyManager = EnemyManager.Instance;
+        caveGen = GetComponent<CaveMapGenerator>();       
     }
 
     public void Init()
@@ -80,6 +73,20 @@ public class TileManager : MonoSingleton<TileManager>
         }
 
         caveGen.GenerateCaveMap();
+
+        //외곽 블락처리
+        for (int i = 0; i < mapHeight; i++)
+        {
+            for (int j = 0; j < mapWidth; j++)
+            {
+                if(i == 0 || j == 0 || i == mapHeight - 1 || j == mapWidth - 1)
+                {
+                    tileMapInfoArray[j, i].tileData.tileType = BASETILETYPE.STONEWALL;
+                    tileMapInfoArray[j, i].tileData.tileRestriction = TILE_RESTRICTION.FORBIDDEN;
+                }
+            }
+        }
+
         ApplyChange();
     }
 
@@ -119,7 +126,6 @@ public class TileManager : MonoSingleton<TileManager>
             curStage.mapWidth = mapWidth;
 
             curStage.stage = new TileData[curStage.mapWidth, curStage.mapHeight];
-            //오브젝트 리스트 세이브 추가해야함
 
             curStage.stairDownPos = stairDownPos;
             curStage.stairUpPos = stairUpPos;
@@ -154,9 +160,7 @@ public class TileManager : MonoSingleton<TileManager>
         mapHeight = Stages[_stageNum].mapHeight;
 
         //바뀐 맵크기에 따른 타일 초기화 상태 세팅 코드 필요(오브젝트 풀/타일회수 재배치)
-
-        //오브젝트 리스트 로드 필요함
-
+        
         stairDownPos = Stages[_stageNum].stairDownPos;
         stairUpPos = Stages[_stageNum].stairUpPos;
 

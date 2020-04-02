@@ -339,6 +339,7 @@ public class CaveMapGenerator : MonoBehaviour
             {
                 tile.tileData.tileType = BASETILETYPE.OUTOFRANGE;
                 tile.tileData.tileRestriction = TILE_RESTRICTION.FORBIDDEN;
+                tile.tileData.isSeen = true; //용암 보여주기
             }
         }
     }

@@ -117,7 +117,7 @@ public class Astar : Singleton<Astar>
                 astarTiles[j, i].Init();
                 astarTiles[j, i].position.PosX = j;
                 astarTiles[j, i].position.PosY = i;
-                astarTiles[j, i].tileData = tileMapInfo[j, i].tileData; //참조 형식
+                astarTiles[j, i].tileData = tileMapInfo[j, i].tileData; //참조 형식 X
             }
         }
 
@@ -136,6 +136,7 @@ public class Astar : Singleton<Astar>
             for (int j = 0; j < mapWidth; j++)
             {
                 astarTiles[j, i].Init();
+                astarTiles[j, i].tileData = tileMapInfo[j, i].tileData;
             }
         }
 
@@ -168,6 +169,8 @@ public class Astar : Singleton<Astar>
     {
         if (openList.Count == 0) //오픈 리스트가 비었으면 리턴
         {
+            isDone = true;
+            pathList.Add(closeList[0].tileData);
             return; //길이 없는 경우의 상태 추가해야함                             
         }
 

@@ -4,11 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public enum ENEMYTYPE
-{
-    JELLY,
-    KOBOLD
-}
 
 public enum ENEMYSTATE
 {
@@ -67,12 +62,6 @@ public class Enemy : MonoBehaviour
         mapWidth = TileManager.Instance.mapWidth;
         mapHeight = TileManager.Instance.mapHeight;          
     }
-  
-
-    //몬스터 타입에 따라 한턴 프로그레스 내용 변경? 
-    //스텟은 어떻게?
-    //적한테 인식번호를 줘야되나? 그래서 다른 곳에서 데이터를 관리?
-
 
     public virtual void TurnProgress()
     {     
@@ -116,19 +105,6 @@ public class Enemy : MonoBehaviour
     {        
         int rndNum = UnityEngine.Random.Range(0, 8);
     }
-  
-    protected float distance(float _a, float _b)
-    {
-        return _a > _b ? _a : _b;
-    }
-
-    protected float diagonalDistance(int _x0, int _y0, int _x1, int _y1)
-    {
-        int dx = _x1 - _x0;
-        int dy = _y1 - _y0;
-
-        return distance(Mathf.Abs(dx), Mathf.Abs(dy));
-    }
 
     public void CalcEnemyFov(Tile[,] _tilemap)
     {
@@ -139,12 +115,12 @@ public class Enemy : MonoBehaviour
             //플레이어를 찾았으면 시야 검색 중지
             if (isFindPlayer) break;
 
-            float degree = i * (Mathf.PI / 180);
+            float degree = i * Mathf.Deg2Rad;
 
             int nx = Mathf.RoundToInt(Mathf.Cos(degree) * enemyData.viewRange) + enemyData.position.PosX;
             int ny = Mathf.RoundToInt(Mathf.Sin(degree) * enemyData.viewRange) + enemyData.position.PosY;
-
-            float distance = diagonalDistance(enemyData.position.PosX, enemyData.position.PosY, nx, ny); //각도당 시야 거리 계산
+           
+            float distance = Vector2.Distance(new Vector2(enemyData.position.PosX, enemyData.position.PosY), new Vector2(nx, ny)); //각도당 시야 거리 계산
 
             for (int j = 0; j < (int)distance; j++)
             {
@@ -164,7 +140,7 @@ public class Enemy : MonoBehaviour
                     if (tileX == playerPos.PosX && tileY == playerPos.PosY)
                     {
                         //공격 사거리 안에 있다면
-                        if(enemyData.atkRange >= diagonalDistance(enemyData.position.PosX, enemyData.position.PosY, playerPos.PosX, playerPos.PosY))
+                        if(enemyData.atkRange >= Vector2.Distance(this.transform.position, new Vector2(playerPos.PosX, playerPos.PosY)))
                         {
                             //공격
                             enemyState = ENEMYSTATE.ATTACK;
@@ -189,7 +165,7 @@ public class Enemy : MonoBehaviour
             }
         }       
     }   
-
+    
     public void HideEnemy()
     {
         if(!TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.isSighted)
@@ -215,6 +191,7 @@ public class Enemy : MonoBehaviour
         TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE;
         Destroy(this.gameObject);
         onDeath();
+          
         PlayerManager.Instance.player.playerData.nextEXP -= enemyData.expValue; //몹이 죽을 때 경험치를 줌 (여기 있으면 안 됨*)
     }
 }

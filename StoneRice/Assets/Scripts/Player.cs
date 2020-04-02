@@ -130,49 +130,51 @@ public class Player : MonoBehaviour
 
         bool isMove = false;
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8)) 
+        float inputDelay = 0;
+
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Keypad8)) 
         {
             targetPosX = tPosX;
             targetPosY = tPosY + 1;
             isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
+        else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad2))
         {
             targetPosX = tPosX;
             targetPosY = tPosY - 1;
             isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKey(KeyCode.Keypad4))
         {
             targetPosX = tPosX - 1;
             targetPosY = tPosY;
             isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
+        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.Keypad6))
         {
             targetPosX = tPosX + 1;
             targetPosY = tPosY;
             isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad7))
+        else if (Input.GetKey(KeyCode.Keypad7))
         {
             targetPosX = tPosX - 1;
             targetPosY = tPosY + 1;
             isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad9))
+        else if (Input.GetKey(KeyCode.Keypad9))
         {
             targetPosX = tPosX + 1;
             targetPosY = tPosY + 1;
             isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad1))
+        else if (Input.GetKey(KeyCode.Keypad1))
         {
             targetPosX = tPosX - 1;
             targetPosY = tPosY - 1;
             isMove = true;
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad3))
+        else if (Input.GetKey(KeyCode.Keypad3))
         {
             targetPosX = tPosX + 1;
             targetPosY = tPosY - 1;
@@ -196,7 +198,7 @@ public class Player : MonoBehaviour
             }
             isTurnDone = true;
         }
-        else if (Input.GetKeyDown(KeyCode.Space)) //휴식
+        else if (Input.GetKey(KeyCode.Space)) //휴식
         {
             NextRest += 2;
             
@@ -206,7 +208,7 @@ public class Player : MonoBehaviour
         if (!isMove) return;
 
         //방향에 적이 있으면
-        for(int i = 0; i < m_EnemyManager.enemyInfoList.Count; i++)
+        for (int i = 0; i < m_EnemyManager.enemyInfoList.Count; i++)
         {
             if (m_EnemyManager.enemyInfoList[i].enemyData.position.PosX == targetPosX && m_EnemyManager.enemyInfoList[i].enemyData.position.PosY == targetPosY)
             {

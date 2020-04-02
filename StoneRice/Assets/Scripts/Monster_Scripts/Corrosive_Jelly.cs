@@ -7,6 +7,7 @@ public class Corrosive_Jelly : Enemy
     public void Init()
     {
         enemyData.EnemyName = "산성 젤리";
+        enemyData.enemyType = ENEMYTYPE.JELLY;
         enemyData.maxHp = 8;
         enemyData.curHp = 8;
         enemyData.maxMp = 10;
