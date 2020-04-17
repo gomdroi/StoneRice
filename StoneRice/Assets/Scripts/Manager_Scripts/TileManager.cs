@@ -8,13 +8,7 @@ public struct Stage
     public int mapHeight;
     public Position stairDownPos;
     public Position stairUpPos;
-    public TileData[,] stage;
-    
-    //public Stage(int width, int height)
-    //{
-    //    mapWidth = width;
-    //    mapHeight = height;
-    //}
+    public TileData[,] stage;   
 }
 
 public class TileManager : MonoSingleton<TileManager>
@@ -25,7 +19,7 @@ public class TileManager : MonoSingleton<TileManager>
     public int mapHeight;
     public Position stairDownPos;
     public Position stairUpPos;
-    public Tile[,] tileMapInfoArray;
+    public Tile[,] tileMapInfoArray; //게임 오브젝트에서 추출한 타일 스크립트 배열
     public List<Stage> Stages;
     public List<GameObject> stairs;
 

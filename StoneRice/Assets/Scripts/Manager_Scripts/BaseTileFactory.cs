@@ -57,7 +57,7 @@ public class BaseTileFactory :MonoBehaviour
         oObject.GetComponent<Stair>().stairData.position.PosX = _PosX;
         oObject.GetComponent<Stair>().stairData.position.PosY = _PosY;
         oObject.GetComponent<Stair>().stairData.stairType = _stairtype;
-        //예시
+        
         if (_stairtype == STAIRTYPE.BASE_DOWN_STAIR)
         {
             oObject.GetComponent<SpriteRenderer>().sprite = ResourceManager.Instance.spriteAtlas.GetSprite("rock_stairs_down");

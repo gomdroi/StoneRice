@@ -152,9 +152,7 @@ public class GameManager : MonoSingleton<GameManager>
 
             m_TileManager.LoadStage(curStage); //이전층을 로드
             m_TrapManager.LoadTraps(curStage); //이전층 트랩 로드
-            m_TileManager.FindStairs(); //계단 재배치     
-            
-            
+            m_TileManager.FindStairs(); //계단 재배치                            
         }
 
         stageText.text = "Floor : " + curStage.ToString();

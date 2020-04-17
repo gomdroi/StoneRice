@@ -56,7 +56,7 @@ public class AstarTile
         int vertical = Mathf.Abs(_endpos.PosX - position.PosX) * 10;//가로H 값
         int horizontal = Mathf.Abs(_endpos.PosY - position.PosY) * 10;//세로 H값
   
-        H = vertical + horizontal;   //총 h값 :  가로+세로 H    
+        H = vertical + horizontal;   //총 H값 :  가로+세로 H    
     }
 
     void CalcF()

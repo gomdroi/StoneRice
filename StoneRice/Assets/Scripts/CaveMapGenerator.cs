@@ -176,8 +176,8 @@ public class CaveMapGenerator : MonoBehaviour
 
         while (true)
         {
-            int stairX = Random.Range(0, m_tileManager.mapWidth);
-            int stairY = Random.Range(0, m_tileManager.mapHeight);
+            int stairX = Random.Range(1, m_tileManager.mapWidth - 1);
+            int stairY = Random.Range(1, m_tileManager.mapHeight - 1);
 
             if (!isStairDownSet)
             {
@@ -236,7 +236,7 @@ public class CaveMapGenerator : MonoBehaviour
                 if (i >= m_tileManager.mapHeight - 1) isAllRoomChecked = true;
             }
         }
-        Debug.Log(rooms.Count);
+        Debug.Log("생성된 방의 개수 : " + rooms.Count);
         CompareRooms();
     }
 
@@ -329,7 +329,7 @@ public class CaveMapGenerator : MonoBehaviour
         
         for(int i = 0;i < rooms.Count; i++)
         {
-            Debug.Log(i + "번째 방 개수 : " + rooms[i].roomSize);
+            Debug.Log(i + "번째 방의 타일 개수 : " + rooms[i].roomSize);
         }
 
         //가장 큰방을 남김

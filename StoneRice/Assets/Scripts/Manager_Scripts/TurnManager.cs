@@ -71,7 +71,7 @@ public class TurnManager : MonoSingleton<TurnManager>
                 if (!m_PlayerManager.player.isDead)
                 {
                     m_PlayerManager.player.TurnOverCheck();
-                    m_PlayerManager.player.PlayerInput();
+                    m_PlayerManager.player.PlayerInput_T();
                 }                             
                 break;
 
@@ -94,7 +94,7 @@ public class TurnManager : MonoSingleton<TurnManager>
 
             case TURN_STATE.INTERACTIVE:
 
-                m_TrapManager.DoTrap(m_PlayerManager.player); //트랩 체크(나중에 상호작용 합쳐야함?)
+                m_TrapManager.DoTrap(m_PlayerManager.player); //트랩 체크
 
                 if(preTrunState == TURN_STATE.PLAYER_TURN)
                 {
@@ -104,13 +104,7 @@ public class TurnManager : MonoSingleton<TurnManager>
                 {
                     turnState = TURN_STATE.PLAYER_TURN;
                 }
-
                 break;
         }
-    }
-
-    void playerInput()
-    {
-        
     }
 }
