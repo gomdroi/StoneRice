@@ -5,14 +5,6 @@ using UnityEngine.UI;
 using System;
 
 
-public enum ENEMYSTATE
-{
-    IDLE,
-    TRACKING,
-    ATTACK,
-    RUNNINGAWAY
-}
-
 public struct EnemyData
 {
     public Position position;
@@ -27,6 +19,7 @@ public struct EnemyData
     public int def;
     public int viewRange;
     public int expValue;
+    public bool isDead;
 }
 
 public class Enemy : MonoBehaviour
@@ -38,35 +31,40 @@ public class Enemy : MonoBehaviour
     public ENEMYSTATE enemyState;
 
     public SpriteRenderer spriteRenderer;
-    public Image Hp_Bar_Front;
-
+    public GameObject Hp_Bar;
+    public GameObject Hp_Bar_Front;
+    
     public Action onDeath;
 
-    public bool isDead = false;
-
     int mapWidth;
-    int mapHeight;  
+    int mapHeight;
+
+    private void Awake()
+    {
+        astarPath = new List<TileData>();
+        enemyState = ENEMYSTATE.IDLE;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        Hp_Bar = transform.GetChild(0).gameObject;
+        Hp_Bar_Front = transform.GetChild(0).GetChild(0).gameObject;
+    }
 
     public void EnemyInit()
     {
         enemyData.position.PosX = (int)this.gameObject.transform.position.x;
         enemyData.position.PosY = (int)this.gameObject.transform.position.y;
-        astarPath = new List<TileData>();
-        enemyState = ENEMYSTATE.IDLE;
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        Hp_Bar_Front = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
+        enemyData.isDead = false;
 
         TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.tileRestriction = TILE_RESTRICTION.OCCUPIED;
-
-        //꼭 필요할까
+        
         mapWidth = TileManager.Instance.mapWidth;
-        mapHeight = TileManager.Instance.mapHeight;          
+        mapHeight = TileManager.Instance.mapHeight;        
     }
 
-    public virtual void TurnProgress()
-    {     
-        //자신의 HP상태가 얼마남지 않았으면 러닝어웨이로 전환(특정 몹 한정)
 
+    public virtual void TurnProgress()
+    {
+        //자신의 HP상태가 얼마남지 않았으면 러닝어웨이로 전환(특정 몹 한정)
+        
         switch (enemyState)
         {
             case ENEMYSTATE.IDLE:
@@ -170,26 +168,32 @@ public class Enemy : MonoBehaviour
     {
         if(!TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.isSighted)
         {
-            transform.GetChild(0).gameObject.SetActive(false);
             spriteRenderer.enabled = false;
+
+            Hp_Bar.SetActive(false);          
         }
         else
-        {
-            transform.GetChild(0).gameObject.SetActive(true);
+        {           
             spriteRenderer.enabled = true;
+
+            if(enemyData.curHp >= enemyData.maxHp)
+            {
+                Hp_Bar.SetActive(false);
+            }
+            else Hp_Bar.SetActive(true);
         }
     }
 
     public void HpBar_Update()
     {
-        if (enemyData.curHp != 0) Hp_Bar_Front.fillAmount = enemyData.curHp / (float)enemyData.maxHp;
-        else Hp_Bar_Front.fillAmount = 0;
+        if (enemyData.curHp != 0) Hp_Bar_Front.transform.localScale = new Vector3(enemyData.curHp / (float)enemyData.maxHp, Hp_Bar_Front.transform.localScale.y);
+        else Hp_Bar_Front.transform.localScale = new Vector3(0, Hp_Bar_Front.transform.localScale.y);
     }
 
     public void DestroySequence()
     {
         TileManager.Instance.tileMapInfoArray[enemyData.position.PosX, enemyData.position.PosY].tileData.tileRestriction = TILE_RESTRICTION.MOVEABLE;
-        Destroy(this.gameObject);
+        this.gameObject.SetActive(false);
         onDeath();
           
         PlayerManager.Instance.player.playerData.nextEXP -= enemyData.expValue; //몹이 죽을 때 경험치를 줌 (여기 있으면 안 됨*)

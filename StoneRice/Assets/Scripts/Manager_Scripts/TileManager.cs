@@ -8,7 +8,7 @@ public struct Stage
     public int mapHeight;
     public Position stairDownPos;
     public Position stairUpPos;
-    public TileData[,] stage;   
+    public TileData[,] stage;
 }
 
 public class TileManager : MonoSingleton<TileManager>
@@ -20,11 +20,11 @@ public class TileManager : MonoSingleton<TileManager>
     public Position stairDownPos;
     public Position stairUpPos;
     public Tile[,] tileMapInfoArray; //게임 오브젝트에서 추출한 타일 스크립트 배열
-    public List<Stage> Stages;
+    public List<Stage> stages;
     public List<GameObject> stairs;
 
     public BaseTileFactory bTileFactory;
-    public CaveMapGenerator caveGen;  
+    public CaveMapGenerator caveGen;
     
     private void Awake()
     {
@@ -41,7 +41,7 @@ public class TileManager : MonoSingleton<TileManager>
 
         tileMap = new GameObject[mapWidth, mapHeight];
         tileMapInfoArray = new Tile[mapWidth, mapHeight];
-        Stages = new List<Stage>();
+        stages = new List<Stage>();
         stairs = new List<GameObject>();
 
         for (int i = 0; i < mapHeight; i++)
@@ -129,11 +129,11 @@ public class TileManager : MonoSingleton<TileManager>
             {
                 for (int j = 0; j < mapWidth; j++)
                 {
-                    curStage.stage[j, i] = (TileData)tileMapInfoArray[j, i].tileData.Clone();
+                    curStage.stage[j, i] = (TileData)tileMapInfoArray[j, i].tileData;
                 }
             }
 
-            Stages.Add(curStage);
+            stages.Add(curStage);
         }
         else if(!_isNewStage)
         {
@@ -141,7 +141,7 @@ public class TileManager : MonoSingleton<TileManager>
             {
                 for (int j = 0; j < mapWidth; j++)
                 {
-                    Stages[_stageNum].stage[j, i] = (TileData)tileMapInfoArray[j, i].tileData.Clone();
+                    stages[_stageNum].stage[j, i] = (TileData)tileMapInfoArray[j, i].tileData;
                 }
             }
         }
@@ -150,23 +150,19 @@ public class TileManager : MonoSingleton<TileManager>
 
     public void LoadStage(int _stageNum)
     {
-        mapWidth = Stages[_stageNum].mapWidth;
-        mapHeight = Stages[_stageNum].mapHeight;
+        mapWidth = stages[_stageNum].mapWidth;
+        mapHeight = stages[_stageNum].mapHeight;
 
         //바뀐 맵크기에 따른 타일 초기화 상태 세팅 코드 필요(오브젝트 풀/타일회수 재배치)
         
-        stairDownPos = Stages[_stageNum].stairDownPos;
-        stairUpPos = Stages[_stageNum].stairUpPos;
+        stairDownPos = stages[_stageNum].stairDownPos;
+        stairUpPos = stages[_stageNum].stairUpPos;
 
         for (int i = 0; i < mapHeight; i++)
         {
             for (int j = 0; j < mapWidth; j++)
             {
-                tileMapInfoArray[j, i].tileData = (TileData)Stages[_stageNum].stage[j, i].Clone();
-                //tileMapInfoArray[j, i].tileData.position = _stageNum.stage[j, i].position;
-                //tileMapInfoArray[j, i].tileData.tileType = _stageNum.stage[j, i].tileType;
-                //tileMapInfoArray[j, i].tileData.tileRestriction = _stageNum.stage[j, i].tileRestriction;
-                //tileMapInfoArray[j, i].tileData.fov_Value = _stageNum.stage[j, i].fov_Value;
+                tileMapInfoArray[j, i].tileData = (TileData)stages[_stageNum].stage[j, i];
             }
         }
 

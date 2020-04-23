@@ -3,30 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum BASETILETYPE
-{
-    EMPTY,
-    STONEFLOOR = 2,
-    STONEWALL,
-    STAIR_DOWN,
-    STAIR_UP,
-    OUTOFRANGE
-}
-
-public enum TILE_RESTRICTION
-{
-    FORBIDDEN,
-    MOVEABLE,
-    FLYONLY,
-    OCCUPIED
-}
-
 public class BaseTileFactory :MonoBehaviour
 {
     public GameObject baseTile;
     public GameObject stairPrefab;
 
     public GameObject tileCargo;
+
     private void Awake()
     {
         baseTile = Resources.Load("Prefabs/BaseTile") as GameObject;

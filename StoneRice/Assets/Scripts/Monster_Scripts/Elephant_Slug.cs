@@ -21,7 +21,7 @@ public class Elephant_Slug : Enemy
 
     public override void TurnProgress()
     {
-        if (isDead)
+        if (enemyData.isDead)
         {
             DestroySequence();
             return;
@@ -70,7 +70,7 @@ public class Elephant_Slug : Enemy
             case ENEMYSTATE.RUNNINGAWAY:
                 break;
         }
-        HideEnemy();
         HpBar_Update();
+        HideEnemy();
     }
 }

@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum STAIRTYPE
-{
-    NONE,
-    BASE_DOWN_STAIR,
-    BASE_UP_STAIR
-}
+
 
 public struct StairData
 {

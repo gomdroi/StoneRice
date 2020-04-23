@@ -38,7 +38,9 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 9babb56161dcef54da9b48a517f99492, type: 3}
     - {fileID: 2800000, guid: e1db5308f33b15346acace86bd4c5dba, type: 3}
     - {fileID: 2800000, guid: 7fa091010beb90645bd41fab95d51f93, type: 3}
-    totalSpriteSurfaceArea: 93184
+    - {fileID: 2800000, guid: 460bd3d4a31b8694b9041612fed46af1, type: 3}
+    - {fileID: 2800000, guid: fa4725f205f3b464ea7a79af6b132d4a, type: 3}
+    totalSpriteSurfaceArea: 95232
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -53,6 +55,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c0a5db02ab8642741964dfb8eb489fc1, type: 3}
   - {fileID: 21300000, guid: 12c48742b35f26542b701584f759bc3e, type: 3}
   - {fileID: 21300000, guid: 71c80c824a7102b499d602c507610379, type: 3}
+  - {fileID: 21300000, guid: fa4725f205f3b464ea7a79af6b132d4a, type: 3}
   - {fileID: 21300000, guid: 42dbe343dd918b9429dc993e17e7b4c8, type: 3}
   - {fileID: 21300000, guid: fe0e0453a15786b4080fbe960648ba9b, type: 3}
   - {fileID: 21300000, guid: eaf17a53f07ec814b809ff0f1b3a54d5, type: 3}
@@ -65,6 +68,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b43c6a54d9f2a7f41b51d30b647ff4fe, type: 3}
   - {fileID: 21300000, guid: d283ca7466cbed34fb41e4316b3d9001, type: 3}
   - {fileID: 21300000, guid: c74c4fa4c981fec468769e6cf2fd651a, type: 3}
+  - {fileID: 21300000, guid: 460bd3d4a31b8694b9041612fed46af1, type: 3}
   - {fileID: 21300000, guid: 407546e41c6c44249b0088cf6ca660ed, type: 3}
   - {fileID: 21300000, guid: d5eca7f45257ac74991268aecec4210a, type: 3}
   - {fileID: 21300000, guid: 2e02fa15f26bc93448cb512d51f4e802, type: 3}
@@ -145,6 +149,7 @@ SpriteAtlas:
   - potion_golden
   - potion_fizzy
   - orc_floor_3
+  - HP_front
   - rat
   - golden
   - trap_alarm
@@ -157,6 +162,7 @@ SpriteAtlas:
   - trap_spear
   - orc_floor_4
   - potion_murky
+  - HP_back
   - lava_floor_3
   - effervescent
   - trap_arrow

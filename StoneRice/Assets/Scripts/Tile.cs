@@ -9,25 +9,13 @@ public struct Position
     public int PosY;
 }
 
-public struct TileData : ICloneable
+public struct TileData
 {
     public Position position;
     public BASETILETYPE tileType;
     public TILE_RESTRICTION tileRestriction;
     public bool isSeen;
     public bool isSighted;
-
-    public object Clone()
-    {
-        return new TileData()
-        {
-            position = this.position,
-            tileType = this.tileType,
-            tileRestriction = this.tileRestriction,
-            isSeen = this.isSeen,
-            isSighted = this.isSighted
-        };
-    }
 }
 
 public class Tile : MonoBehaviour

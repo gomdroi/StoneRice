@@ -113,7 +113,7 @@ public class TrapManager : MonoSingleton<TrapManager>
             for (int i = 0; i < trapInfoList.Count; i++)
             {
                 TrapData trap = new TrapData();
-                trap = (TrapData)trapInfoList[i].trapData.Clone();
+                trap = trapInfoList[i].trapData;
                 curStageTraps.Add(trap);
             }
 
@@ -123,7 +123,7 @@ public class TrapManager : MonoSingleton<TrapManager>
         {
             for (int i = 0; i < trapInfoList.Count; i++)
             {
-                stageTraps[_stageNum][i] = (TrapData)trapInfoList[i].trapData.Clone();
+                stageTraps[_stageNum][i] = trapInfoList[i].trapData;
             }
         }
     }
@@ -141,7 +141,7 @@ public class TrapManager : MonoSingleton<TrapManager>
         for (int i = 0; i < stageTraps[_stageNum].Count; i++)
         {
             traps[i].SetActive(true);
-            traps[i].GetComponent<Trap>().trapData = (TrapData)stageTraps[_stageNum][i].Clone();
+            traps[i].GetComponent<Trap>().trapData = stageTraps[_stageNum][i];
             traps[i].transform.position = new Vector2(traps[i].GetComponent<Trap>().trapData.position.PosX, traps[i].GetComponent<Trap>().trapData.position.PosY);
             if(traps[i].GetComponent<Trap>().trapData.isActive) traps[i].GetComponent<Trap>().spriteRenderer.enabled = true;
 
@@ -166,6 +166,7 @@ public class TrapManager : MonoSingleton<TrapManager>
             }
         }
     }
+
     public void DoTrap(Player _player)
     {
         for(int i = 0; i < trapInfoList.Count; i++)

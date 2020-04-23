@@ -12,8 +12,7 @@ public class FOV
     }
 
     public void CalcFov(Tile[,] _tilemap, int _x, int _y, int _distance)
-    {
-        
+    {       
         for (int i = 0; i < mapHeight; i++)
         {
             for (int j = 0; j < mapWidth; j++)
@@ -34,7 +33,7 @@ public class FOV
             
             float distance = Vector2.Distance(new Vector2(_x, _y), new Vector2(nx, ny)); //각도당 시야 거리 계산
 
-            for (int j = 0; j < (int)distance; j++) 
+            for (int j = 0; j < Mathf.RoundToInt(distance); j++) 
             {
                 int tileX = Mathf.RoundToInt(Mathf.Lerp(_x, nx, j / distance)); //러프를 이용해서 걸리는 타일을 뽑는다.
                 int tileY = Mathf.RoundToInt(Mathf.Lerp(_y, ny, j / distance));               

@@ -3,28 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum TRAPTYPE
-{
-    NONE,
-    DART,
-    NET
-}
-
-public class TrapData : ICloneable
+public struct TrapData
 {
     public Position position;
     public bool isActive;
     public TRAPTYPE trapType;
-
-    public object Clone()
-    {
-        return new TrapData()
-        {
-            position = this.position,
-            isActive = this.isActive,
-            trapType = this.trapType
-        };
-    }
 }
 
 public class Trap : MonoBehaviour

@@ -21,7 +21,7 @@ public class Rat : Enemy
 
     public override void TurnProgress()
     {
-        if (isDead)
+        if (enemyData.isDead)
         {
             DestroySequence();
             return;
@@ -51,7 +51,7 @@ public class Rat : Enemy
             case ENEMYSTATE.RUNNINGAWAY:
                 break;
         }
-        HideEnemy();
         HpBar_Update();
+        HideEnemy();
     }
 }

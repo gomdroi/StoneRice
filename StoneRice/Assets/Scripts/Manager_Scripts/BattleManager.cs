@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum DEBUFFTYPE
-{
-    NONE,
-    ENTANGLE
-}
+
 
 public struct Debuff
 {
@@ -42,7 +38,7 @@ public class BattleManager : Singleton<BattleManager>
                 if (_enemy.enemyData.curHp <= 0)
                 {
                     _enemy.enemyData.curHp = 0;
-                    _enemy.isDead = true;
+                    _enemy.enemyData.isDead = true;
                 }
                    
                 LogManager.Instance.SimpleLog(
@@ -58,14 +54,12 @@ public class BattleManager : Singleton<BattleManager>
                     _player.playerData.curHp = 0;
                     _player.isDead = true;
                 }
-                   
-
+              
                 LogManager.Instance.SimpleLog(
                     _enemy.enemyData.EnemyName + "이/가 당신을 공격했다!"
                     );
 
                 break;
-
         }            
     }
 
@@ -75,7 +69,6 @@ public class BattleManager : Singleton<BattleManager>
         {
             case TRAPTYPE.DART:
                 _player.playerData.curHp -= 2;
-
                 LogManager.Instance.SimpleLog("당신은 다트를 맞았다.");
                 break;
             case TRAPTYPE.NET:

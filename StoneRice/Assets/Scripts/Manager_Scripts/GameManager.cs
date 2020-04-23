@@ -97,16 +97,15 @@ public class GameManager : MonoSingleton<GameManager>
     //다음층으로 내려갈때
     public void GoDownStage()
     {           
-        if(m_TileManager.Stages.Count <= curStage + 1) //다음층에 간적이 없다면
+        if(m_TileManager.stages.Count <= curStage + 1) //다음층에 간적이 없다면
         {
             m_TileManager.SaveStage(curStage); //현재층 맵 상태를 저장
             m_TrapManager.SaveTraps(curStage); //현재층 트랩 상태를 저장  
+            m_EnemyManager.SaveEnemys(curStage); //현재층 몹 상태를 저장
 
             m_TileManager.CreateCaveMap(); //새로운 맵을 만듬
             m_TileManager.SaveStage(curStage, true); //만든 맵을 저장
             m_TileManager.FindStairs(); //계단 재배치
-
-            m_EnemyManager.reArrangeEnemy(curStage); //몬스터 : 내려갈때(new) - 현재층을 꺼준다.
 
             curStage += 1; //스테이지 증가
 
@@ -119,16 +118,15 @@ public class GameManager : MonoSingleton<GameManager>
         {
             m_TileManager.SaveStage(curStage); //현재층 맵 상태를 저장
             m_TrapManager.SaveTraps(curStage); //현재층 트랩 상태를 저장
-
-            m_EnemyManager.reArrangeEnemy(curStage, true,false); //몬스터 : 내려갈때(old) - 현재층을 꺼주고 다음층을 켜준다
-
+            m_EnemyManager.SaveEnemys(curStage); //현재층 몹 상태를 저장
+            
             curStage += 1; //스테이지 증가
 
             m_TileManager.LoadStage(curStage); //다음층의 스테이지를 로드
             m_TrapManager.LoadTraps(curStage); //다음층의 트랩 로드
-            m_TileManager.FindStairs(); //계단 재배치
+            m_EnemyManager.LoadEnemys(curStage);
 
-            
+            m_TileManager.FindStairs(); //계단 재배치          
         }
 
         stageText.text = "Floor : " + curStage.ToString();
@@ -145,13 +143,14 @@ public class GameManager : MonoSingleton<GameManager>
         {
             m_TileManager.SaveStage(curStage); //현재층 맵정보 저장
             m_TrapManager.SaveTraps(curStage); //현재층 트랩정보 저장
-
-            m_EnemyManager.reArrangeEnemy(curStage, false, true); //몬스터 : 올라갈때 - 현재층을 꺼주고 이전층을 켜준다
+            m_EnemyManager.SaveEnemys(curStage); //현재층 몹 상태를 저장
+            
 
             curStage -= 1; //스테이지 감소
 
             m_TileManager.LoadStage(curStage); //이전층을 로드
             m_TrapManager.LoadTraps(curStage); //이전층 트랩 로드
+            m_EnemyManager.LoadEnemys(curStage);
             m_TileManager.FindStairs(); //계단 재배치                            
         }
 

@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ENEMYTYPE
-{
-    JELLY,
-    RAT,
-    ELEPHANTSLUG
-}
+
 
 public class EnemyFactory : MonoBehaviour
 {
@@ -17,8 +12,8 @@ public class EnemyFactory : MonoBehaviour
     private void Awake()
     {
         enemyPrefab = Resources.Load("Prefabs/Enemy") as GameObject;
-        enemyCargo = GameObject.Find("EnemyCargo");
-    }
+        enemyCargo = GameObject.Find("EnemyCargo");       
+    }   
 
     public GameObject CallEnemy(ENEMYTYPE _enemyType)
     {
@@ -53,7 +48,7 @@ public class EnemyFactory : MonoBehaviour
         return oEnemy;
     }    
 
-    Position FindValidateTile()
+    public Position FindValidateTile()
     {
         TileManager m_tileManager = TileManager.Instance;
 

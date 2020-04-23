@@ -21,7 +21,7 @@ public class Corrosive_Jelly : Enemy
 
     public override void TurnProgress()
     {
-        if(isDead)
+        if(enemyData.isDead)
         {
             DestroySequence();
             return;
@@ -51,12 +51,7 @@ public class Corrosive_Jelly : Enemy
             case ENEMYSTATE.RUNNINGAWAY:
                 break;
         }
-        HideEnemy();
         HpBar_Update();
-    }
-
-    void corrosiveAttack()
-    {
-
+        HideEnemy();
     }
 }

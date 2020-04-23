@@ -9,17 +9,18 @@ using UnityEngine;
 //}
 
 public class EnemyManager : MonoSingleton<EnemyManager>
-{    
-    GameObject enemyPrefab;   
+{   
+    public List<GameObject> JellyPool;
+    public List<GameObject> RatPool;
+    public List<GameObject> SlugPool;
 
-    public List<List<GameObject>> stageEnemys;
     public List<Enemy> enemyInfoList;
+    public List<List<EnemyData>> stageEnemys;
 
     public EnemyFactory enemyFactory;
 
     private void Awake()
     {
-        enemyPrefab = Resources.Load("Prefabs/Enemy") as GameObject;
         this.gameObject.AddComponent<EnemyFactory>();
 
         enemyFactory = GetComponent<EnemyFactory>();
@@ -27,87 +28,210 @@ public class EnemyManager : MonoSingleton<EnemyManager>
 
     private void Start()
     {
+        JellyPool = new List<GameObject>();
+        RatPool = new List<GameObject>();
+        SlugPool = new List<GameObject>();
+
         enemyInfoList = new List<Enemy>();
-        stageEnemys = new List<List<GameObject>>();
+        stageEnemys = new List<List<EnemyData>>();
     }
 
     private void Update()
     {
     }
 
-    public void CallRandomEnemy(int _stageNum)
+    void PoolOff()
     {
-        enemyInfoList.Clear();
-
-        List<GameObject> curStageEnemy = new List<GameObject>();
-        int enemyCount = Random.Range(4, 10);
-
-        for(int i = 0; i <= enemyCount; i++)
+        for (int i = 0; i < JellyPool.Count; i++)
         {
-            int randomNum = Random.Range(0, 2);
-
-            curStageEnemy.Add(enemyFactory.CallEnemy((ENEMYTYPE)randomNum));
+            JellyPool[i].SetActive(false);
         }
-
-        if(_stageNum >= 4)
+        for (int i = 0; i < RatPool.Count; i++)
         {
-            int randomNum = Random.Range(0, 2);
-
-            if(randomNum == 1)
-            {
-                curStageEnemy.Add(enemyFactory.CallEnemy(ENEMYTYPE.ELEPHANTSLUG));
-            }
+            RatPool[i].SetActive(false);
         }
-
-        stageEnemys.Add(curStageEnemy); //층별로 적 게임오브젝트 저장
-
-        //적 목록을 뽑아 저장
-        for(int i = 0; i < curStageEnemy.Count; i++)
+        for (int i = 0; i < SlugPool.Count; i++)
         {
-            enemyInfoList.Add(curStageEnemy[i].GetComponent<Enemy>());
+            SlugPool[i].SetActive(false);
         }
     }
 
-    public void reArrangeEnemy(int _stageNum, bool _isOldNext = false, bool _isBackWard = false)
+    public void CallRandomEnemy(int _stageNum)
     {
+        PoolOff();
+        enemyInfoList.Clear();
+     
+        int enemyCount = Random.Range(4, 10);
+        Debug.Log("현재 층 생성된 몬스터 수 : " + enemyCount);
+        for (int i = 0; i < enemyCount; i++)
+        {
+            
+            Position spawnPos = enemyFactory.FindValidateTile();
+            int randomNum = 0;
+            bool isSet = false;
+
+            if (_stageNum < 4)
+            {
+                randomNum = Random.Range(0, 2);
+            }
+            else if(_stageNum >= 4)
+            {
+                randomNum = Random.Range(0, 3);
+            }
+
+            switch((ENEMYTYPE)randomNum)
+            {
+                case ENEMYTYPE.JELLY:
+                    for(int j = 0; j < JellyPool.Count; j++)
+                    {
+                        if (JellyPool[j].activeSelf) continue;
+                        JellyPool[j].SetActive(true);
+                        JellyPool[j].transform.position = new Vector2(spawnPos.PosX, spawnPos.PosY);
+                        JellyPool[j].GetComponent<Corrosive_Jelly>().EnemyInit();
+                        JellyPool[j].GetComponent<Corrosive_Jelly>().Init();
+                        isSet = true;
+                        break;
+                    }
+                    if(isSet == false)
+                    {
+                        JellyPool.Add(enemyFactory.CallEnemy(ENEMYTYPE.JELLY));
+                    }
+                    break;
+                case ENEMYTYPE.RAT:
+                    for(int j = 0; j < RatPool.Count; j++)
+                    {
+                        if (RatPool[j].activeSelf) continue;
+                        RatPool[j].SetActive(true);
+                        RatPool[j].transform.position = new Vector2(spawnPos.PosX, spawnPos.PosY);
+                        RatPool[j].GetComponent<Rat>().EnemyInit();
+                        RatPool[j].GetComponent<Rat>().Init();
+                        isSet = true;
+                        break;
+                    }
+                    if(isSet == false)
+                    {
+                        RatPool.Add(enemyFactory.CallEnemy(ENEMYTYPE.RAT));
+                    }
+                    break;
+                case ENEMYTYPE.ELEPHANTSLUG:
+                    for(int j = 0; j < SlugPool.Count; j++)
+                    {
+                        if (SlugPool[j].activeSelf) continue;
+                        SlugPool[j].SetActive(true);
+                        SlugPool[j].transform.position = new Vector2(spawnPos.PosX, spawnPos.PosY);
+                        SlugPool[j].GetComponent<Elephant_Slug>().EnemyInit();
+                        SlugPool[j].GetComponent<Elephant_Slug>().Init();
+                        isSet = true;
+                        break;
+                    }
+                    if(isSet == false)
+                    {
+                        SlugPool.Add(enemyFactory.CallEnemy(ENEMYTYPE.ELEPHANTSLUG));
+                    }
+                    break;
+            }          
+        }
+
+        for(int i = 0; i < JellyPool.Count; i++)
+        {
+            if(JellyPool[i].activeSelf)
+            {
+                enemyInfoList.Add(JellyPool[i].GetComponent<Corrosive_Jelly>());
+            }
+        }
+
+        for(int i = 0; i < RatPool.Count; i++)
+        {
+            if(RatPool[i].activeSelf)
+            {
+                enemyInfoList.Add(RatPool[i].GetComponent<Rat>());
+            }
+        }
+
+        for(int i = 0; i < SlugPool.Count; i++)
+        {
+            if(SlugPool[i].activeSelf)
+            {
+                enemyInfoList.Add(SlugPool[i].GetComponent<Elephant_Slug>());
+            }
+        }
+
+        List<EnemyData> curStageEnemy = new List<EnemyData>();
+        for(int i = 0; i < enemyInfoList.Count; i++)
+        {
+            curStageEnemy.Add(enemyInfoList[i].enemyData);
+        }
+        stageEnemys.Add(curStageEnemy);
+    }
+
+    public void SaveEnemys(int _stageNum)
+    {        
+        stageEnemys[_stageNum].Clear();
+
+        //적 데이터 카피
+        for (int i = 0; i < enemyInfoList.Count; i++)
+        {
+            EnemyData enemy = new EnemyData();
+            enemy = enemyInfoList[i].enemyData;
+            stageEnemys[_stageNum].Add(enemy);
+        }    
+    }
+
+    public void LoadEnemys(int _stageNum)
+    {
+        PoolOff();
         enemyInfoList.Clear();
 
-        for (int i = 0; i < stageEnemys[_stageNum].Count; i++)
+        for(int i = 0; i < stageEnemys[_stageNum].Count; i++)
         {
-            stageEnemys[_stageNum][i].SetActive(false);
-        }
-        
-        if(_isOldNext)
-        {
-            for (int i = 0; i < stageEnemys[_stageNum + 1].Count; i++)
+            switch(stageEnemys[_stageNum][i].enemyType)
             {
-                stageEnemys[_stageNum + 1][i].SetActive(true);               
-                enemyInfoList.Add(stageEnemys[_stageNum + 1][i].GetComponent<Enemy>());
-            }                
+                case ENEMYTYPE.JELLY:
+                    for(int j = 0; j < JellyPool.Count; j++)
+                    {
+                        if (JellyPool[j].activeSelf) continue;
+                        JellyPool[j].SetActive(true);
+                        JellyPool[j].GetComponent<Corrosive_Jelly>().enemyData = stageEnemys[_stageNum][i];
+                        JellyPool[j].transform.position = 
+                            new Vector2(JellyPool[j].GetComponent<Corrosive_Jelly>().enemyData.position.PosX, JellyPool[j].GetComponent<Corrosive_Jelly>().enemyData.position.PosY);
+                        enemyInfoList.Add(JellyPool[j].GetComponent<Corrosive_Jelly>());
+                        break;
+                    }
+                    break;
+                case ENEMYTYPE.RAT:
+                    for(int j = 0; j < RatPool.Count; j++)
+                    {
+                        if (RatPool[j].activeSelf) continue;
+                        RatPool[j].SetActive(true);
+                        RatPool[j].GetComponent<Rat>().enemyData = stageEnemys[_stageNum][i];
+                        RatPool[j].transform.position =
+                            new Vector2(RatPool[j].GetComponent<Rat>().enemyData.position.PosX, RatPool[j].GetComponent<Rat>().enemyData.position.PosY);
+                        enemyInfoList.Add(RatPool[j].GetComponent<Rat>());
+                        break;
+                    }
+                    break;
+                case ENEMYTYPE.ELEPHANTSLUG:
+                    for(int j =0; j < SlugPool.Count; j++)
+                    {
+                        if (SlugPool[j].activeSelf) continue;
+                        SlugPool[j].SetActive(true);
+                        SlugPool[j].GetComponent<Elephant_Slug>().enemyData = stageEnemys[_stageNum][i];
+                        SlugPool[j].transform.position =
+                            new Vector2(SlugPool[j].GetComponent<Elephant_Slug>().enemyData.position.PosX, SlugPool[j].GetComponent<Elephant_Slug>().enemyData.position.PosY);
+                        enemyInfoList.Add(SlugPool[j].GetComponent<Elephant_Slug>());
+                        break;
+                    }
+                    break;
+            }
         }
-        else if(_isBackWard)
-        {
-            for (int i = 0; i < stageEnemys[_stageNum - 1].Count; i++)
-            {
-                stageEnemys[_stageNum - 1][i].SetActive(true);
-                enemyInfoList.Add(stageEnemys[_stageNum - 1][i].GetComponent<Enemy>());
-            }              
-        }       
     }
 
     public void Delete_EnemyInfo()
     {
-        int curStage = GameManager.Instance.curStage;
-        var EL = stageEnemys[curStage];
-        
-
         for (int i = 0; i < enemyInfoList.Count; i++)
         {
             if(enemyInfoList[i].enemyData.curHp == 0)
             {
-                GameObject targetGO = enemyInfoList[i].gameObject;
-                
-                stageEnemys[curStage].Remove(enemyInfoList[i].gameObject);
                 enemyInfoList.Remove(enemyInfoList[i]);      
             }         
         }

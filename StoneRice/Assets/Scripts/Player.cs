@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PLAYERSTATE
-{
-    NONE,
-    INPUT,
-    OUTPUT,
-    DELAY
-}
+
 
 public struct PlayerData
 {
@@ -220,7 +214,7 @@ public class Player : MonoBehaviour
                     isTurnDone = true;
                     playerState = PLAYERSTATE.DELAY;
                 }
-                break;
+                break;               
             case PLAYERSTATE.OUTPUT:
                 //방향에 적이 있으면
                 for (int i = 0; i < m_EnemyManager.enemyInfoList.Count; i++)
